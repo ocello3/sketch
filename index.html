@@ -1,56 +1,62 @@
 <!DOCTYPE html>
-<html lang="">
+<html lang="ja">
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>sketch list</title>
 		<link rel="stylesheet" type="text/css" href="./lib/skeleton.css">
+		<script src="./lib/p5-1.4.0.min.js"></script>
+		<script src="./lib/tweakpane-3.0.5.min.js"></script>
+		
 	</head>
 	<body>
 		<div class="container">
-			<h2>Sketch List</h2>
-			twitter: <a href="https://twitter.com/ocello3"> ocello3</a>
+			<div class="row"><code>author: <a href="https://twitter.com/ocello3">twitter/ocello3</a>, souce: <a href="https://github.com/ocello3/sketch">github/sketch</a></code></div>
+			<!-- <h2>Sketch List</h2> -->
+			<h2>
+				<div class="row">
+					<div class="one-half column" id="sketch"></div>
+					<script src="sketch.js" type="module"></script>
+				</div>
+			</h2>
+			<div class="row"><code>/* daily sketch log using p5js, tonejs and tweakpane. most of them are WIP. be careful for sounds from browser. */</code></div>
 		</div>
 		<table class="container">
 			<thead>
 				<tr>
 					<th>date</th>
 					<th>sketch</th>
-					<th>note</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
 					<td>2021-11-08</td>
-					<td><a href="./20211108/sketch.html">WIP createGraphics</a></td>
-					<td><a href="./20211108/note.html">猫とメモ</a></td>
+					<td><a href="./2021/11/08/sketch.html">WIP createGraphics</a></td>
 				</tr>
 				<tr>
 					<td>2021-11-07</td>
-					<td><a href="./20211107/sketch.html">Mouse tracking circles</a></td>
-					<td>#NA</td>
+					<td><a href="./2021/11/07/sketch.html">Mouse tracking circles</a></td>
 				</tr>
 				<tr>
 					<td>2021-10-16</td>
-					<td><a href="./20211016/sketch.html">WIP 昨日と同じ</a></td>
-					<td>#NA</td>
+					<td><a href="./2021/10/16/sketch.html">WIP 昨日と同じ</a></td>
 				</tr>
 				<tr>
 					<td>2021-10-15</td>
-					<td><a href="./20211015/sketch.html">Noisely moving rects</a></td>
-					<td>#NA</td>
+					<td><a href="./2021/10/15/sketch.html">Noisely moving rects</a></td>
 				</tr>
 				<tr>
 					<td>2021-10-14</td>
-					<td><a href="./20211014/sketch.html">WIP import img</a></td>
-					<td>#NA</td>
+					<td><a href="./2021/10/14/sketch.html">WIP import img</a></td>
 				</tr>
 				<tr>
 					<td>2021-10-08</td>
-					<td><a href="./20211008/sketch.html">WIP re-start sketch</a></td>
-					<td>#NA</td>
+					<td><a href="./2021/10/08/sketch.html">WIP re-start sketch</a></td>
 				</tr>
 			</tbody>
 		</table>
+		<div class="container">
+			<div class="u-pull-right"><code>Copyright (c) 2021 ocello3</code>
+		</div>
 	</body>
 </html>

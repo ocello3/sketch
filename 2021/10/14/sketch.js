@@ -1,30 +1,27 @@
-import { test, setParams, updateParams, setDot, updateDot } from './calc.js';
+import { test, getParams, setObj, updateObj } from './calc.js';
 import { gui } from './gui.js';
 
 let params;
-let grid;
+let objs;
 let img;
 
 const thisPreload = s => {
-	img = s.loadImage('../image/IMG_0020.jpeg');
+	img = s.loadImage('../../../image/IMG_0020.jpeg');
 	if (img.width > img.height) img.resize(img.width, 0);
 	if (img.width <= img.height) img.resize(0, img.height);
 }
 
 const thisSetup = s => {
-	s.noiseSeed(99);
-	params = setParams();
+	params = getParams();
 	s.createCanvas(params.size, params.size);
 	const totalNum = params.num * params.num;
-	grid = Array.from(Array(totalNum), (dot, index) => setDot(index)(params, img));
+	objs = Array.from(Array(totalNum), (obj, index) => setObj(index)(params, img));
 	gui(params);
 	test();
 }
 
 const thisDraw = s => {
-	// update
-	updateParams(params);
-	grid = grid.map((dot) => updateDot(dot)(params));
+	objs = objs.map((obj, index) => updateObj(obj, index));
 	// s.noLoop();
 	s.background(255);
 	// frame
@@ -34,17 +31,16 @@ const thisDraw = s => {
 	s.rect(0, 0, params.size);
 	s.pop();
 	// image
-	// s.image(img, 0, 0);
+	s.image(img, 0, 0);
 	// text
 	s.push();
+	s.erase(50);
 	s.textSize(10);
 	s.textAlign(s.CENTER);
 	// s.fill(0);
-	grid.forEach((dot, index) => {
-		s.noStroke();
-		s.fill(dot.color);
-		const size = dot.size * dot.noise * 2.5;
-		s.rect(dot.pos.x, dot.pos.y, size, size, 3);
+	objs.forEach((obj, index) => {
+		s.fill(obj.color);
+		s.text(obj.text, obj.pos.x, obj.pos.y);
 	});
 	s.pop();
 }

@@ -25,13 +25,6 @@ const testDraw = () => {
 }
 
 const thisDraw = s => {
-	// frame
-	s.background(255);
-	s.push();
-	s.noFill();
-	s.stroke(0);
-	s.rect(0, 0, params.size);
-	s.pop();
 	// texture
 	texture.push();
 	texture.background(0);
@@ -47,6 +40,13 @@ const thisDraw = s => {
 	s.texture(texture);
 	s.rect(s.width/4, s.height/4, s.width/2);
 	testDraw();
+	// frame
+	s.background(255);
+	s.push();
+	s.noFill();
+	s.stroke(0);
+	s.rect(0, 0, params.size);
+	s.pop();
 }
 
 const sketch = s => {
