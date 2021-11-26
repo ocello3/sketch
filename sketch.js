@@ -1,5 +1,10 @@
 let params;
 const canvasDiv = document.getElementById('sketch'); 
+window.onscroll = function () {
+	if (document.body.scrollHeight == window.innerHeight + window.pageYOffset) {
+		window.focus();
+	}
+}
 
 const testSetup = () => {
 }
