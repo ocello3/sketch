@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>2021-11-27</title>
+		<link rel="stylesheet" type="text/css" href="../../../lib/skeleton.css">
+		<script src="../../../lib/p5-1.4.0.min.js"></script>
+		<script src="../../../lib/tweakpane-3.0.5.min.js"></script>
+		<!-- <script src="../../../lib/tone-14.8.26.js"></script> -->
+		<script src="sketch.js" type="module"></script>
+		<script>
+			const setup_lockScroll = () => {
+				window.addEventListener("touchstart", scroll_control, { passive: false });
+				window.addEventListener("touchmove", scroll_control, { passive: false });
+			}
+			const scroll_control = event => event.preventDefault();
+		</script>
+	</head>
+	<body>
+		<div class="row">
+			<div class="two-thirds column" id="sketch"></div>
+			<div class="one-third column" id="pane"></div>
+		</div>
+		<div class="row">
+			<h4>猫とメモ</h4>
+		</div>
+		<div class="row">
+			<div class="six columns">
+				<a href="https://gyazo.com/0d04624e782cdb8ac8359cb436fc071e"><img class="u-full-width" src="https://i.gyazo.com/0d04624e782cdb8ac8359cb436fc071e.jpg" alt="Image from Gyazo" width="3020"/></a>
+			</div>
+			<div class="six columns">
+				10月から猫がいてアクロバットな寝方してる。最近、リングフィットしてると肩に登ってくる。<br>
+				createGraphicsで作成したイメージで別の図形を塗りつぶししようとしたところ。<br>
+			</div>
+		</div>
+	</div>
+		<div class="row">
+			<a href="../../../index.html"><h6>back to top</h6></a>
+		</div>
+	</body>
+</html>
