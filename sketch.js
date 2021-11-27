@@ -53,20 +53,21 @@ const thisDraw = s => {
 	// update
 	params.scrollTop = params.canvasDiv.scrollTop || document.body.scrollTop || window.pageYOffset;
 	const multRate = (params.scrollmax - params.scrollTop) / params.scrollmax; // top: 1, bottom: 0
+	// scroll pos
+	s.scale(1, multRate);
+	s.fill(255 - 255 * multRate);
 	// font
 	/*
 	s.push();
 	s.textSize(34);
 	s.textFont(params.font);
 	s.textAlign(s.LEFT, s.CENTER);
-	s.scale(1, multRate);
-	s.fill(255 - 255 * multRate);
 	s.text(params.text, 0, params.height/2);
 	s.pop();
 	*/
 	// draw font points
 	s.push();
-	s.fill(0);
+	s.noStroke();
 	s.beginShape();
 	s.translate(-params.bounds.x * params.width / params.bounds.w, -params.bounds.y * params.height / params.bounds.h);
 	for (let i = 0; i < params.points.length; i++) {
