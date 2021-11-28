@@ -13,6 +13,7 @@ const setParams = (params) => {
 	params.height = params.canvasDiv.clientWidth*0.2;
 	params.scrollTop = 0;
 	params.scrollmax = 200;
+	params.scrollOffsetRate = 1.2;
 	// font info
 	params.fontSize = 1;
 	params.text = 'Sketch List';
@@ -53,20 +54,23 @@ const thisDraw = s => {
 	// update
 	params.scrollTop = params.canvasDiv.scrollTop || document.body.scrollTop || window.pageYOffset;
 	const multRate = (params.scrollmax - params.scrollTop) / params.scrollmax; // top: 1, bottom: 0
-	// scroll pos
-	s.scale(1, multRate);
-	s.fill(255 - 255 * multRate);
+	
 	// font
-	/*
-	s.push();
-	s.textSize(34);
-	s.textFont(params.font);
-	s.textAlign(s.LEFT, s.CENTER);
-	s.text(params.text, 0, params.height/2);
-	s.pop();
-	*/
+	if (multRate < params.scrollOffsetRate) {
+		s.push();
+		s.scale(1, 1 - multRate * params.scrollOffsetRate);
+		s.fill(100, (1-multRate) * 255 * params.scrollOffsetRate);
+		s.textSize(34);
+		s.textFont(params.font);
+		s.textAlign(s.LEFT, s.CENTER);
+		s.text(params.text, 0, params.height/2);
+		s.pop();
+	}
+	
 	// draw font points
 	s.push();
+	s.scale(1, multRate);
+	s.fill(255 - 255 * multRate);
 	s.noStroke();
 	s.beginShape();
 	s.translate(-params.bounds.x * params.width / params.bounds.w, -params.bounds.y * params.height / params.bounds.h);
