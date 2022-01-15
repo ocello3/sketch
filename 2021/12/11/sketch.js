@@ -51,4 +51,3 @@ const sketch = s => {
 	s.draw = () => thisDraw(s);
 }
 export const s = new p5(sketch, 'sketch');
-
