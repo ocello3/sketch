@@ -3,6 +3,7 @@ export const setParams = () => {
 	params.isPlay = false;
 	params.scrLk = true;
 	params.frameRate = 0;
+	params.frameCount = 0;
 	params.canvasDiv = document.getElementById('sketch');
 	params.size = params.canvasDiv.clientWidth;
 	params.mute = true;
@@ -11,6 +12,7 @@ export const setParams = () => {
 
 export const updateParams = (s, params) => {
 	params.frameRate = s.frameRate();
+	params.frameCount += 1;
 }
 
 const activate = (s, params, audio, seq) => {

@@ -1,4 +1,5 @@
-import { setParams, updateParams, gui } from './params.js';
+import { setParams, updateParams, gui } from '../../util/params.js';
+import { addParams, addGui } from './params.js';
 import { setDot, updateDot } from './dot.js';
 import { setPoly, updatePoly, testSetPoly, testUpdatedPoly } from './poly.js';
 
@@ -20,11 +21,13 @@ const testSetup = () => {
 const thisSetup = s => {
 	s.noiseSeed(90);
 	params = setParams();
+	addParams(params);
 	s.createCanvas(params.size, params.size);
 	const totalNum = params.num * params.num;
 	grid = Array.from(Array(totalNum), (dot, index) => setDot(index)(params, img));
 	poly = setPoly(params, grid);
-	gui(params);
+	const tab = gui(s, params, false, false);
+	addGui(tab, params);
 	testSetup();
 }
 
@@ -35,7 +38,7 @@ const testDraw = () => {
 
 const thisDraw = s => {
 	// update
-	updateParams(params);
+	updateParams(s, params);
 	grid = grid.map((dot) => updateDot(dot)(params));
 	poly = updatePoly(poly)(grid, params);
 	// frame
