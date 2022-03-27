@@ -3,16 +3,18 @@ import { translateDate } from './translateDate.js';
 const sketchListTemplate = (date, title, note) => {
 	const formatedDate = translateDate(date);
 	const linkToSketch = `./sketch/${date}/sketch.html`;
-	const linkToGitHub = `https://github.com/ocello3/sketch/${date}`;
+	const linkToGitHub = `https://github.com/ocello3/sketch/tree/main/sketch/${date}`;
 	return `
 	<tr>
 		<td>${formatedDate}</td>
 		<td><a class="uk-button uk-button-default uk-button-small" href="${linkToSketch}">play</a></td>
-		<td><a class="uk-button uk-button-primary uk-button-small" href="${linkToGitHub}">code</a></td>
+		<td><a class="uk-button uk-button-primary uk-button-small" href="${linkToGitHub}" target="_blank" rel="noopener noreferer">code</a></td>
 		<td>${title}</td>
 		<td>${note}</td>
 	</tr>`
 }
+
+// https://github.com/ocello3/sketch/tree/main/sketch/20220306
 
 export const renderSketchList = async (id, jsonPath) => {
 	const dataArrayRes = await fetch(jsonPath);
