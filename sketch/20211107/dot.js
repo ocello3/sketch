@@ -1,5 +1,4 @@
 import { s } from './sketch.js';
-import { setParams } from './params.js';
 
 const setXYindex = (index, params) => {
 	const xIndex = index % params.num;

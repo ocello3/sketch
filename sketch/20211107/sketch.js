@@ -1,7 +1,8 @@
 import { setParams, updateParams, gui } from '../../util/params.js';
-import { addParams, addGui } from './params.js';
+import { addParams, addGui } from './editParams.js';
 import { setDot, updateDot } from './dot.js';
 import { setPoly, updatePoly, testSetPoly, testUpdatedPoly } from './poly.js';
+
 
 let params;
 let grid;
@@ -15,10 +16,10 @@ const thisPreload = s => {
 }
 
 const testSetup = () => {
-	testSetPoly(poly);
+	// testSetPoly(poly);
 }
 
-const thisSetup = s => {
+const thisSetup = (s) => {
 	s.noiseSeed(90);
 	params = setParams();
 	addParams(params);
@@ -36,7 +37,7 @@ const testDraw = () => {
 	// testUpdatedPoly(params, grid);
 }
 
-const thisDraw = s => {
+const thisDraw = (s) => {
 	// update
 	updateParams(s, params);
 	grid = grid.map((dot) => updateDot(dot)(params));
