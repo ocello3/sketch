@@ -1,23 +1,18 @@
-import { setParams, testSetParams, updateParams, setGui_params } from './params.js';
-import { gui } from './gui.js';
+import { setParams, updateParams, gui } from '../../util/params.js';
+import { addParams, addGui } from './addParams.js';
 import { setSynth } from './synth.js';
 
 let params;
 let synth;
 let tempNum = 0;
 
-const testSetup = () => {
-	testSetParams(params);
-}
-
 const thisSetup = s => {
 	params = setParams();
-	const tab = gui(params);
+	addParams(params);
+	const tab = gui(s, params, true, false); // audio, seq
+	addGui(params, tab);
 	synth = setSynth(params, tab);
-	setGui_params(params, tab);
 	s.createCanvas(params.size, params.size);
-	// test
-	testSetup();
 }
 
 const testDraw = () => {
@@ -27,7 +22,7 @@ const testDraw = () => {
 const thisDraw = s => {
 	s.background(255);
 	// update
-	updateParams(params);
+	updateParams(s, params);
 	// draw frame
 	s.push();
 	s.noFill();
