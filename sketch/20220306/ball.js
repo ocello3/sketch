@@ -1,8 +1,9 @@
-export const setParamsForBall = (params) => {
+const setParams = (params) => {
 	const ball = {};
 	ball.num = 16;
 	ball.radius = params.size / 3;
 	ball.interval = 60;
+	ball.easingF = 0.5;
 	params.ball = ball;
 }
 
@@ -17,10 +18,12 @@ const setBall = (index) => (s, params, centerPos) => {
 		return s.createVector(x, y);
 	}
 	ball.pos = setPos();
+	ball.targetPos = ball.pos;
 	return ball;
 }
 
 export const setBalls = (s, params) => {
+	setParams(params);
 	const balls = {};
 	balls.isUpdate = false;
 	balls.centerPos = s.createVector(params.size/2, params.size/2);
@@ -29,12 +32,18 @@ export const setBalls = (s, params) => {
 	return balls;
 }
 
-const updateBall = (preBall) => (s, params, centerPos) => {
+const updateBall = (preBall) => (s, params, isUpdate, centerPos) => {
 	const newBall = { ...preBall };
 	newBall.centerPos = centerPos;
-	const updatePos = () => {
+	const updateTargetPos = () => {
 		const diff = p5.Vector.sub(newBall.centerPos, preBall.centerPos);
 		return p5.Vector.add(preBall.pos, diff);
+	}
+	if (isUpdate) newBall.targetPos = updateTargetPos();
+	const updatePos = () => {
+		const diff = p5.Vector.sub(newBall.targetPos, preBall.pos);
+		const update = p5.Vector.mult(diff, params.ball.easingF);
+		return p5.Vector.add(preBall.pos, update);
 	}
 	newBall.pos = updatePos();
 	return newBall;
@@ -43,9 +52,10 @@ const updateBall = (preBall) => (s, params, centerPos) => {
 export const updateBalls = (preBalls, s, params) => {
 	const newBalls = { ...preBalls };
 	newBalls.isUpdate = (s.frameCount % params.ball.interval === 0);
-	newBalls.centerPos = s.createVector(Math.random()*params.size, Math.random()*params.size);
-	const centerPos = (newBalls.isUpdate)? newBalls.centerPos: preBalls.centerPos;
-	newBalls.ballArr =  preBalls.ballArr.map((preBall) => updateBall(preBall)(s, params, centerPos));
+	if (newBalls.isUpdate) {
+		newBalls.centerPos = s.createVector(Math.random()*params.size, Math.random()*params.size);
+	}
+	newBalls.ballArr =  preBalls.ballArr.map((preBall) => updateBall(preBall)(s, params, newBalls.isUpdate, newBalls.centerPos));
 	return newBalls;
 }
 

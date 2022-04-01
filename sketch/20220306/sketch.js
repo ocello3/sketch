@@ -1,7 +1,7 @@
 import { setParams, updateParams, gui } from '../../util/params.js';
 import { drawFrame } from '../../util/drawFrame.js';
 import { debug } from '../../util/debug.js'; // obj, length=null, start=0
-import { setParamsForBall, setBalls, updateBalls, drawBall } from './ball.js';
+import { setBalls, updateBalls, drawBall } from './ball.js';
 // import { setSynth, playSynth } from './synth.js';
 
 let params; // size
@@ -11,7 +11,6 @@ let balls;
 const thisSetup = s => {
 	params = setParams();
 	s.createCanvas(params.size, params.size);
-	setParamsForBall(params);
 	// tab.pages[0].addInput(params, 'margin');
 	const tab = gui(s, params, false, false); // audio, seq
 	balls = setBalls(s, params);
@@ -24,7 +23,7 @@ const thisDraw = s => {
 	s.background(255);
 	// playSynth(ball, synth);
 	drawBall(s, balls.ballArr);
-	// debug(balls, 1);
+	debug(balls, 1);
 	drawFrame(s, params);
 	updateParams(s, params);
 	balls = updateBalls(balls, s, params);
