@@ -20,9 +20,9 @@ const thisSetup = s => {
 }
 
 const thisDraw = s => {
-	s.background(255);
+	// s.background(255);
 	// playSynth(ball, synth);
-	drawBall(s, balls.ballArr);
+	drawBall(s, balls, params);
 	debug(balls, 1);
 	drawFrame(s, params);
 	updateParams(s, params);
@@ -33,4 +33,4 @@ const sketch = s => {
 	s.setup = () => thisSetup(s);
 	s.draw = () => thisDraw(s);
 }
-export const s = new p5(sketch, 'sketch');
+new p5(sketch, 'sketch');

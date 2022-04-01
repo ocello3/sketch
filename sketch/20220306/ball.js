@@ -1,14 +1,14 @@
 const setParams = (params) => {
 	const ball = {};
 	ball.num = 16;
-	ball.radius = params.size / 3;
+	ball.radius = params.size / 4;
 	ball.interval = 60;
-	ball.easingF = 0.5;
 	params.ball = ball;
 }
 
 const setBall = (index) => (s, params, centerPos) => {
 	const ball = {};
+	ball.easingF = Math.random();
 	ball.centerPos = centerPos;
 	const setPos = () => {
 		const intervalAngle = Math.PI*2/params.ball.num;
@@ -39,10 +39,13 @@ const updateBall = (preBall) => (s, params, isUpdate, centerPos) => {
 		const diff = p5.Vector.sub(newBall.centerPos, preBall.centerPos);
 		return p5.Vector.add(preBall.pos, diff);
 	}
-	if (isUpdate) newBall.targetPos = updateTargetPos();
+	if (isUpdate) {
+		newBall.targetPos = updateTargetPos();
+		newBall.easingF = Math.random();
+	}
 	const updatePos = () => {
 		const diff = p5.Vector.sub(newBall.targetPos, preBall.pos);
-		const update = p5.Vector.mult(diff, params.ball.easingF);
+		const update = p5.Vector.mult(diff, newBall.easingF);
 		return p5.Vector.add(preBall.pos, update);
 	}
 	newBall.pos = updatePos();
@@ -59,17 +62,23 @@ export const updateBalls = (preBalls, s, params) => {
 	return newBalls;
 }
 
-export const drawBall = (s, balls) => {
+export const drawBall = (s, balls, params) => {
+	// fill background
+	s.push();
+	s.fill(255, (balls.isUpdate)?255:10);
+	s.rect(0, 0, params.size);
+	s.pop();
+	// draw circle
 	s.push();
 	s.noFill();
 	s.stroke(0);
 	s.beginShape();
-	s.curveVertex(balls.slice(-1)[0].pos.x, balls.slice(-1)[0].pos.y);
-	balls.forEach(ball => {
+	s.curveVertex(balls.ballArr.slice(-1)[0].pos.x, balls.ballArr.slice(-1)[0].pos.y);
+	balls.ballArr.forEach(ball => {
 		s.curveVertex(ball.pos.x, ball.pos.y);
 	});
-	s.curveVertex(balls[0].pos.x, balls[0].pos.y);
-	s.curveVertex(balls[1].pos.x, balls[1].pos.y);
+	s.curveVertex(balls.ballArr[0].pos.x, balls.ballArr[0].pos.y);
+	s.curveVertex(balls.ballArr[1].pos.x, balls.ballArr[1].pos.y);
 	s.endShape();
 	s.pop();
 	return false;
