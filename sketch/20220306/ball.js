@@ -3,7 +3,7 @@ const setParams = (params) => {
 	ball.num = 16;
 	ball.radius = params.size / 4;
 	ball.interval = 60;
-	params.ball = ball;
+	return ball;
 }
 
 const setBall = (index) => (s, params, centerPos) => {
@@ -23,12 +23,11 @@ const setBall = (index) => (s, params, centerPos) => {
 }
 
 export const setBalls = (s, params) => {
-	setParams(params);
+	params.ball = setParams(params);
 	const balls = {};
 	balls.isUpdate = false;
 	balls.centerPos = s.createVector(params.size/2, params.size/2);
-	const blankArray = Array(params.ball.num);
-	balls.ballArr = Array.from(blankArray, (_, index) => setBall(index)(s, params, balls.centerPos));
+	balls.ballArr = Array.from(Array(params.ball.num), (_, index) => setBall(index)(s, params, balls.centerPos));
 	return balls;
 }
 
@@ -63,23 +62,27 @@ export const updateBalls = (preBalls, s, params) => {
 }
 
 export const drawBall = (s, balls, params) => {
-	// fill background
-	s.push();
-	s.fill(255, (balls.isUpdate)?255:10);
-	s.rect(0, 0, params.size);
-	s.pop();
-	// draw circle
-	s.push();
-	s.noFill();
-	s.stroke(0);
-	s.beginShape();
-	s.curveVertex(balls.ballArr.slice(-1)[0].pos.x, balls.ballArr.slice(-1)[0].pos.y);
-	balls.ballArr.forEach(ball => {
-		s.curveVertex(ball.pos.x, ball.pos.y);
-	});
-	s.curveVertex(balls.ballArr[0].pos.x, balls.ballArr[0].pos.y);
-	s.curveVertex(balls.ballArr[1].pos.x, balls.ballArr[1].pos.y);
-	s.endShape();
-	s.pop();
+	const drawBackground = () => {
+		s.push();
+		s.fill(255, (balls.isUpdate)?255:10);
+		s.rect(0, 0, params.size);
+		s.pop();
+	}
+	drawBackground();
+	const drawCircle = () => {
+		s.push();
+		s.noFill();
+		s.stroke(0);
+		s.beginShape();
+		s.curveVertex(balls.ballArr.slice(-1)[0].pos.x, balls.ballArr.slice(-1)[0].pos.y);
+		balls.ballArr.forEach(ball => {
+			s.curveVertex(ball.pos.x, ball.pos.y);
+		});
+		s.curveVertex(balls.ballArr[0].pos.x, balls.ballArr[0].pos.y);
+		s.curveVertex(balls.ballArr[1].pos.x, balls.ballArr[1].pos.y);
+		s.endShape();
+		s.pop();
+	}
+	drawCircle();
 	return false;
 }

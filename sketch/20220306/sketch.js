@@ -8,7 +8,7 @@ let params; // size
 let balls;
 // let synth;
 
-const thisSetup = s => {
+const setup = s => {
 	params = setParams();
 	s.createCanvas(params.size, params.size);
 	// tab.pages[0].addInput(params, 'margin');
@@ -19,7 +19,7 @@ const thisSetup = s => {
 	// s.frameRate(2);
 }
 
-const thisDraw = s => {
+const draw = s => {
 	// s.background(255);
 	// playSynth(ball, synth);
 	drawBall(s, balls, params);
@@ -30,7 +30,7 @@ const thisDraw = s => {
 }
 
 const sketch = s => {
-	s.setup = () => thisSetup(s);
-	s.draw = () => thisDraw(s);
+	s.setup = () => setup(s);
+	s.draw = () => draw(s);
 }
 new p5(sketch, 'sketch');
