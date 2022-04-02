@@ -64,22 +64,23 @@ export const updateBalls = (preBalls, s, params) => {
 export const drawBall = (s, balls, params) => {
 	const drawBackground = () => {
 		s.push();
-		s.fill(255, (balls.isUpdate)?255:10);
+		s.fill(255, (balls.isUpdate)?255:20);
 		s.rect(0, 0, params.size);
 		s.pop();
 	}
 	drawBackground();
 	const drawCircle = () => {
+		const ballArr = balls.ballArr;
 		s.push();
 		s.noFill();
 		s.stroke(0);
 		s.beginShape();
-		s.curveVertex(balls.ballArr.slice(-1)[0].pos.x, balls.ballArr.slice(-1)[0].pos.y);
-		balls.ballArr.forEach(ball => {
+		s.curveVertex(ballArr.slice(-1)[0].pos.x, ballArr.slice(-1)[0].pos.y);
+		ballArr.forEach(ball => {
 			s.curveVertex(ball.pos.x, ball.pos.y);
 		});
-		s.curveVertex(balls.ballArr[0].pos.x, balls.ballArr[0].pos.y);
-		s.curveVertex(balls.ballArr[1].pos.x, balls.ballArr[1].pos.y);
+		s.curveVertex(ballArr[0].pos.x, ballArr[0].pos.y);
+		s.curveVertex(ballArr[1].pos.x, ballArr[1].pos.y);
 		s.endShape();
 		s.pop();
 	}
