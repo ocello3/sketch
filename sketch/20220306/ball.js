@@ -3,6 +3,7 @@ const setParams = (params) => {
 	ball.num = 16;
 	ball.radius = params.size / 4;
 	ball.interval = 60;
+	ball.refreshInterval = ball.interval * 4;
 	return ball;
 }
 
@@ -53,6 +54,7 @@ const updateBall = (preBall) => (s, params, isUpdate, centerPos) => {
 
 export const updateBalls = (preBalls, s, params) => {
 	const newBalls = { ...preBalls };
+	newBalls.isRefresh = (s.frameCount % params.ball.refreshInterval === 0);
 	newBalls.isUpdate = (s.frameCount % params.ball.interval === 0);
 	if (newBalls.isUpdate) {
 		newBalls.centerPos = s.createVector(Math.random()*params.size, Math.random()*params.size);
@@ -64,7 +66,7 @@ export const updateBalls = (preBalls, s, params) => {
 export const drawBall = (s, balls, params) => {
 	const drawBackground = () => {
 		s.push();
-		s.fill(255, (balls.isUpdate)?255:20);
+		s.fill(255, (balls.isRefresh)?255:5);
 		s.rect(0, 0, params.size);
 		s.pop();
 	}
@@ -84,6 +86,6 @@ export const drawBall = (s, balls, params) => {
 		s.endShape();
 		s.pop();
 	}
-	drawCircle();
+	if (!balls.isRefresh) drawCircle();
 	return false;
 }

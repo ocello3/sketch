@@ -9,16 +9,29 @@ const setMonoSynth = () => {
 	}).toDestination();
 }
 
+const setSampler = () => {
+	return new Tone.Sampler({
+		urls: {
+			A1: 'select.wav',
+			A2: 'progress_loop.wav',
+		},
+		baseUrl: '../../sound/SND01_sine/',
+	}).toDestination();
+}
+
 export const setSynth = () => {
 	const synth = {};
 	synth.monoSynth = setMonoSynth();
-	synth.monoSynth2 = setMonoSynth();
+	synth.sampler = setSampler();
+	/*
 	synth.loop = new Tone.Loop((time) => {
 		synth.monoSynth2.triggerAttackRelease("E6", "16n");;
 	}, "4n").start(0);
+	*/
 	return synth;
 }
 
-export const playSynth = (ball, synth) => {
-	if (ball.sound === true) synth.monoSynth.triggerAttackRelease("C4", "8n");
+export const playSynth = (balls, synth) => {
+	if (balls.isUpdate === true & balls.isRefresh === false) synth.sampler.triggerAttackRelease("A1", "8n");
+	if (balls.isRefresh === true) synth.sampler.triggerAttackRelease("A2", "8n");
 }
