@@ -64,3 +64,7 @@ y軸方向は、弾性運動にする。
 p5.Graphicdで描画するところまでできた。
 上下で内容を変える(pgのindexで色を変える)
 動かす。
+2つのレイヤーでずらすなど差をつける。
+imageをテクスチャとして貼り付けられる？
+texture使えばできそう。
+https://p5js.org/reference/#/p5/texture
