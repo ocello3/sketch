@@ -23,7 +23,7 @@ const sketch = s => {
 	};
 	s.draw = () => { 
 		drawLinePgs(params, pgs, lines, s);
-		debug(lines('below')(1), params.line.num);
+		debug(lines('below')('half'), params.line.num);
 		drawFrame(s, params);
 		updateParams(s, params);
 		// playSynth(balls, synth);

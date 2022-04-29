@@ -61,10 +61,9 @@ y軸方向は、弾性運動にする。
 レイヤー2のボールの周囲にeraseで短冊に影響する。→noBackgroundでblendする？
 
 ## to do
-p5.Graphicdで描画するところまでできた。
-上下で内容を変える(pgのindexで色を変える)
-動かす。
-2つのレイヤーでずらすなど差をつける。
+2つのレイヤーでずらすなど差をつける。→ 2つめのレイヤーの高さを半分にしては？
+alphaをsinで変化させる。
 imageをテクスチャとして貼り付けられる？
 texture使えばできそう。
+
 https://p5js.org/reference/#/p5/texture

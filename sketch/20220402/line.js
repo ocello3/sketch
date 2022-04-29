@@ -9,40 +9,43 @@ export const setLineParams = (params) => {
 }
 
 export const setLinePgs = (params, pgs, s) => {
-	const pg = s.createGraphics(params.line.pgWidth, params.line.pgHeight);
-	const pgArray = [pg, pg];
-	pgs.lines = {
-		above: pgArray,
-		below: pgArray,
-	}
+	const fullPg = s.createGraphics(params.line.pgWidth, params.line.pgHeight);
+	const halfPg = s.createGraphics(params.line.pgWidth, Math.ceil(params.line.pgHeight/2));
+	const pgSet = new Map([['full', fullPg], ['half', halfPg]]);
+	pgs.lines = new Map([['above', pgSet], ['below', pgSet]]);
 }
 
-const setLine = (index) => (params, s, pgIndex, side, widths) => {
+const setLine = (lineIndex) => (params, s, pgSize, pgSide, widths) => {
 	const line = {};
-	line.width = widths[index];
-	line.height = params.line.pgHeight;
+	line.width = widths[lineIndex];
+	const calcHeight = () => {
+		if (pgSize === 'full') return params.line.pgHeight;
+		if (pgSize === 'half') return params.line.pgHeight/2;
+		throw `${pgSize}`
+	}
+	line.height = calcHeight();
 	const calcXPos = () => {
-		const accWidths = widths.slice(0, index);
+		const accWidths = widths.slice(0, lineIndex);
 		return accWidths.reduce((pre, cur) => pre + cur, 0);
 	}
 	line.pos = s.createVector(calcXPos(), 0);
 	const calcColor = () => {
-		const alpha = 150 / params.line.num * index;
-		if (side === 'above') return s.color(255, 0, 0, alpha);
-		if (side === 'below') return s.color(0, 0, 255, alpha);
+		const alpha = 150 / params.line.num * lineIndex;
+		if (pgSide === 'above') return s.color(255, 0, 0, alpha);
+		if (pgSide === 'below') return s.color(0, 0, 255, alpha);
 		throw `${side}`;
 	}
 	line.color = calcColor();
 	return line;
 }
 
-export const setLines = (params, s) => (side) => (pgIndex) => {
+export const setLines = (params, s) => (pgSide) => (pgSize) => {
 	const widths = Array.from(Array(params.line.num), () => params.line.pgWidth/params.line.num);
-	return Array.from(Array(params.line.num), (_, index) => setLine(index)(params, s, pgIndex, side, widths));
+	return Array.from(Array(params.line.num), (_, lineIndex) => setLine(lineIndex)(params, s, pgSize, pgSide, widths));
 }
 
-const drawLines = (pg, pgIndex, lines) => {
-	const thisLines = lines(pgIndex);
+const drawLines = (pg, pgSize, lines) => {
+	const thisLines = lines(pgSize);
 	thisLines.forEach(line => {
 		pg.push();
 		pg.noStroke();
@@ -54,15 +57,18 @@ const drawLines = (pg, pgIndex, lines) => {
 }
 
 export const drawLinePgs = (params, pgs, lines, s) => {
-	pgs.lines.above.forEach((pg, pgIndex) => {
-		const thisLines = lines('above');
-		drawLines(pg, pgIndex, thisLines);
-		s.image(pg, 0, 0);
-	});
-	pgs.lines.below.forEach((pg, pgIndex) => {
-		const thisLines = lines('below');
-		drawLines(pg, pgIndex, thisLines);
-		s.image(pg, 0, params.size/2);
-	});
+	for (const [pgSide, pgSet] of pgs.lines) {
+		const thisLines = lines(pgSide);
+		const calcYPos = () => {
+			if (pgSide === 'above') return 0;
+			if (pgSide === 'below') return params.size/2;
+			throw `${pgSide}`;
+		}
+		const yPos = calcYPos();
+		for (const [pgSize, pg] of pgSet) {
+			drawLines(pg, pgSize, thisLines);
+			s.image(pg, 0, yPos);
+		}
+	}
 	return false;
 }
