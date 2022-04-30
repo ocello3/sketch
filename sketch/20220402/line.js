@@ -99,7 +99,7 @@ export const updateLinesMap = (preLinesMap, s, params) => {
 }
 
 const drawLines = (pg, linesData, s) => {
-	pg.background(255);
+	pg.background(255, 150);
 	for (const line of linesData) {
 		pg.push();
 		pg.noStroke();
@@ -111,12 +111,25 @@ const drawLines = (pg, linesData, s) => {
 	return false;
 }
 
+const deleteLines = (pg, linesData) => {
+	pg.background(255);
+	for (const line of linesData) {
+		pg.push();
+		pg.erase(line.alpha*3, line.alpha*3);
+		pg.rect(line.pos.x, line.pos.y, line.width, line.height);
+		pg.noErase();
+		pg.pop();
+	}
+	return false;
+}
+
 export const drawLinePgs = (params, pgs, linesMap, s) => {
 	for (const [pgSide, linesSet] of linesMap) {
 		const pgSet = pgs.get(pgSide);
 		for (const [pgSize, lines] of linesSet) {
 			const pg = pgSet.get(pgSize);
-			drawLines(pg, lines.data, s);
+			if (pgSize === 'full') drawLines(pg, lines.data, s);
+			if (pgSize === 'half') deleteLines(pg, lines.data);
 		}
 		const calcYPos = () => {
 			if (pgSide === 'above') return 0;

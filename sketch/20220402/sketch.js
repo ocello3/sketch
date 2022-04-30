@@ -24,7 +24,7 @@ const sketch = s => {
 	s.draw = () => {
 		s.background(255);
 		drawLinePgs(params, pgs.lines, linesMap, s);
-		debug(linesMap.get('above').get('full'), 3, 20);
+		// debug(linesMap.get('above').get('full'), 3, 20);
 		drawFrame(s, params);
 		updateParams(s, params);
 		linesMap = updateLinesMap(linesMap, s, params);
