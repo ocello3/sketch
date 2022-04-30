@@ -36,7 +36,7 @@ const getLogList = (obj, length, start) => {
 	if (Array.isArray(obj)) {
 		const arrayObjLogList = getArrayObjLogList(obj, null, length, start);
 		logList.push(...arrayObjLogList);
-		console.log('array');
+		// console.log('array');
 	} else {
 		const objLogList = getObjLogList(obj, length, start);
 		logList.push(...objLogList);
