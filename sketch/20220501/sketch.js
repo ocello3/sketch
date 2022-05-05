@@ -1,7 +1,7 @@
 import { setParams, updateParams, gui } from '../../util/params.js';
 import { drawFrame } from '../../util/drawFrame.js';
 import { debug } from '../../util/debug.js'; // obj, length=null, start=0
-import { setDropParams, setDrops, updateDrops } from './drop.js';
+import { setDropParams, setDrops, updateDrops, drawDrops } from './drop.js';
 // import { setSynth, playSynth } from './synth.js';
 
 const sketch = s => {
@@ -17,14 +17,15 @@ const sketch = s => {
 		drops = setDrops(params, s)
 		// synth = setSynth();
 		s.noLoop();
-		s.frameRate(2);
+		// s.frameRate(10);
 	};
 	s.draw = () => {
 		s.background(255);
 		debug(drops.dataArray, 1);
-		drawFrame(s, params);
-		updateParams(s, params);
 		drops = updateDrops(drops, params, s);
+		drawFrame(s, params);
+		drawDrops(drops, s);
+		updateParams(s, params);
 		// playSynth(balls, synth);
 	};
 }
