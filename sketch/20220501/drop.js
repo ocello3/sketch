@@ -105,13 +105,6 @@ const drawDrop = (data, s) => {
 	s.stroke(0, 255 * (1 - data.progress)); // 徐々に薄くなる
 	s.strokeWeight(data.lineWeight);
 	s.line(data.startPos.x, data.startPos.y, data.pos.x, data.pos.y);
-	// delete
-	data.isCollisionArray.forEach((isCollision, index) => {
-		if (isCollision) s.ellipse(data.pos.x, data.pos.y, 300, data.velY, data.velY*0.25);
-		// if (isCollision) console.log(`index: ${index}, pos: ${data.pos.y}`);
-		return false;
-	});
-	// later
 	s.pop();
 	return false;
 }
