@@ -2,7 +2,7 @@ import { setParams, updateParams, gui } from '../../util/params.js';
 import { drawFrame } from '../../util/drawFrame.js';
 import { debug } from '../../util/debug.js'; // obj, length=null, start=0
 import { setDropParams, setDrops, updateDrops, drawDrops } from './drop.js';
-import { setRippleParams, setRipples, updateRipples } from './ripple.js';
+import { setRippleParams, setRipples, updateRipples, drawRipples } from './ripple.js';
 // import { setSynth, playSynth } from './synth.js';
 
 const sketch = s => {
@@ -25,11 +25,12 @@ const sketch = s => {
 	};
 	s.draw = () => {
 		s.background(255);
-		debug(ripples.dataArray, 1);
 		drops = updateDrops(drops, params, s);
-		ripples = updateRipples(ripples, drops.dataArray);
+		ripples = updateRipples(ripples, drops.dataArray, params, s);
+		// debug(ripples.dataArray, 1);
 		drawFrame(s, params);
-		drawDrops(drops, s);
+		drawDrops(drops, params, s);
+		drawRipples(ripples, params, s);
 		updateParams(s, params);
 		// playSynth(balls, synth);
 	};

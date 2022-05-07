@@ -1,6 +1,7 @@
 export const setDropParams = (params) => {
 	const drop = {};
 	drop.num = 10;
+	drop.shearXAngle = Math.PI/10;
 	drop.maxAccY = 0.5;
 	drop.maxInitVelY = 2;
 	drop.maxInitPosYRate = 0.2;
@@ -98,9 +99,10 @@ export const updateDrops = (preDrops, params, s) => {
 	return newDrops;
 };
 
-const drawDrop = (data, s) => {
+const drawDrop = (data, params, s) => {
 	if (data.isDraw === false) return false; // 描画しない
 	s.push();
+	s.shearX(params.drop.shearXAngle);
 	s.strokeCap(s.ROUND);
 	s.stroke(0, 255 * (1 - data.progress)); // 徐々に薄くなる
 	s.strokeWeight(data.lineWeight);
@@ -109,7 +111,7 @@ const drawDrop = (data, s) => {
 	return false;
 }
 
-export const drawDrops = (drops, s) => {
-	for (const data of drops.dataArray) drawDrop(data, s);
+export const drawDrops = (drops, params, s) => {
+	for (const data of drops.dataArray) drawDrop(data, params, s);
 	return false;
 }
