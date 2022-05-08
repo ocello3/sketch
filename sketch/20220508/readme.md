@@ -5,3 +5,13 @@ generative design
 マウスのx座標が直線の長さをコントロールします。y座標が直線の数と太さを決めます。
 
 ## 実装
+line(x1, y1, x2, y2)を使用する。
+x1, y1が画面中央、x2, y2が円周上の点とする。
+円周の半径：0～size/2の範囲でmouseXで制御する。
+直線の数：1～params.line.maxNumの範囲でmouseYで制御する。
+線の太さ：1～params.line.maxStrokeWeightの範囲でmouseYで制御する。
+
+## 試すこと
+キーボードで線のタイプ（キャップ）を変更できる。
+xキーを押すことで、x座標を固定する。
+yキーを押すことで、y座標を固定する。
