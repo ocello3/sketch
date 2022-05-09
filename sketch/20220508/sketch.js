@@ -22,7 +22,7 @@ const sketch = s => {
 	s.draw = () => {
 		s.background(255);
 		lines = updateLines(lines, s.mouseX, s.mouseY, params, s);
-		debug(lines.dataArray, 1);
+		debug(lines, 1);
 		drawFrame(s, params);
 		drawLines(lines, params, s)
 		updateParams(s, params);
