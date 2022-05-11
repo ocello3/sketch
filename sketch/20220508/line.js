@@ -44,16 +44,16 @@ const calcTiles = (isInit, preTiles, tileSize, mouseX, mouseY, params, s) => {
 			const constrainedNum = (floatNum > 1) ? floatNum : 1;
 			return Math.floor(constrainedNum);
 		}
-		const lineNum = calcLineNum();
+		newTile.lineNum = calcLineNum();
 		newTile.diameter = s.map(mouseX, 0, params.size, 0, params.line.maxDiameter);
-		newTile.angleInterval = 2 * Math.PI / lineNum;
+		newTile.angleInterval = 2 * Math.PI / newTile.lineNum;
 		newTile.baseAngle = isInit? 0: preTile.baseAngle + params.line.angleSpeed;
 		const calcCenterPos = () => {
 			const relativeCenterPos = s.createVector(tileSize.x / 2, tileSize.y / 2);
 			return p5.Vector.add(calcOriginPos(), relativeCenterPos);
 		}
 		const centerPos = calcCenterPos();
-		newTile.lines = calcLines(lineNum, centerPos, newTile.diameter, newTile.angleInterval, newTile.baseAngle, mouseY, params, s);
+		newTile.lines = calcLines(newTile.lineNum, centerPos, newTile.diameter, newTile.angleInterval, newTile.baseAngle, mouseY, params, s);
 		return newTile;
 	});
 	return newTiles;
@@ -90,10 +90,10 @@ const drawTile = (tile, s) => {
 	s.push();
 	// s.noFill();
 	s.beginShape();
-	if (tile.lines.num > 1) s.curveVertex(tile.lines.slice(-1)[0].endPos.x, tile.lines.slice(-1)[0].endPos.y);
+	if (tile.lineNum > 1) s.curveVertex(tile.lines.slice(-1)[0].endPos.x, tile.lines.slice(-1)[0].endPos.y);
 	for (const line of tile.lines) drawLine(line, s);
 	s.curveVertex(tile.lines[0].endPos.x, tile.lines[0].endPos.y);
-	if (tile.lines.num > 1) s.curveVertex(tile.lines[1].endPos.x, tile.lines[1].endPos.y);
+	if (tile.lineNum > 1) s.curveVertex(tile.lines[1].endPos.x, tile.lines[1].endPos.y);
 	s.endShape();
 	s.pop();
 	return false;

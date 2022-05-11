@@ -21,9 +21,9 @@ const sketch = s => {
 	s.draw = () => {
 		s.background(255);
 		lineObj = calcLineObj(lineObj, s.mouseX, s.mouseY, params, s);
-		debug(lineObj.tiles);
+		// debug(lineObj.tiles);
+		drawLineObj(lineObj, s);
 		drawFrame(s, params);
-		drawLineObj(lineObj, s)
 		updateParams(s, params);
 		// playSynth(balls, synth);
 	};
