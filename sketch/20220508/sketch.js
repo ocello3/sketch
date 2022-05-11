@@ -15,6 +15,7 @@ const sketch = s => {
 		// tab.pages[0].addInput(params, 'margin');
 		const tab = gui(s, params, false, false); // audio, seq
 		// synth = setSynth();
+		s.colorMode(s.HSB);
 		s.noLoop();
 		// s.frameRate(10);
 	};
