@@ -7,17 +7,16 @@ export const setCircleParams = (params) => {
 }
 
 const calcPoints = (preGrid, newGrid, preCircleObj, newCircleObj, params, s) => {
-	const prePoints = preCircleObj.isInit ? Array.from(Array(params.pointsNum), () => 1) : preGrid.points;
+	const prePoints = preCircleObj.isInit ? Array.from(Array(params.circle.pointsNum), () => 1) : preGrid.points;
 	const newPoints = prePoints.map((_, pointIndex) => {
+		const newPoint = {};
 		const calcPos = () => {
 			const radius = newCircleObj.gridSize * params.circle.pointsRadiusReducRate * 0.5;
 			const x = newGrid.centerPos.x + radius * Math.cos(newGrid.pointsAngleInterval * pointIndex);
 			const y = newGrid.centerPos.y + radius * Math.sin(newGrid.pointsAngleInterval * pointIndex);
 			return s.createVector(x, y);
 		}
-		const newPoint = {
-			pos: calcPos(),
-		}
+		newPoint.pos = calcPos();
 		return newPoint;
 	});
 	return newPoints;
@@ -26,53 +25,52 @@ const calcPoints = (preGrid, newGrid, preCircleObj, newCircleObj, params, s) => 
 const calcGrids = (preCircleObj, newCircleObj, params, s) => {
 	const preGrids = preCircleObj.isInit? Array.from(Array(newCircleObj.gridNum), () => 1): preCircleObj.grids;
 	return preGrids.map((preGrid, gridIndex) => {
+		const newGrid = {};
 		const calcId = () => {
 			const x = Math.floor(gridIndex / params.circle.gridPieceNum);
 			const y = gridIndex % params.circle.gridPieceNum;
 			return s.createVector(x, y);
 		}
-		const id = preCircleObj.isInit? calcId(): preGrid.id;
+		newGrid.id = preCircleObj.isInit? calcId(): preGrid.id;
 		const calcOriginPos = () => {
-			const x = id.x * newCircleObj.gridSize;
-			const y = id.y * newCircleObj.gridSize;
+			const x = newGrid.id.x * newCircleObj.gridSize;
+			const y = newGrid.id.y * newCircleObj.gridSize;
 			return s.createVector(x, y);
 		}
-		const originPos = preCircleObj.isInit? calcOriginPos(): preGrid.originPos;
+		newGrid.originPos = preCircleObj.isInit? calcOriginPos(): preGrid.originPos;
 		const calcInitCenterPos = () => {
-			const x = originPos.x + newCircleObj.gridSize * 0.5;
-			const y = originPos.y + newCircleObj.gridSize * 0.5;
+			const x = newGrid.originPos.x + newCircleObj.gridSize * 0.5;
+			const y = newGrid.originPos.y + newCircleObj.gridSize * 0.5;
 			return s.createVector(x, y);
 		}
 		const updateCenterPos = () => {
 			return preGrid.centerPos; // need to add
 		}
-		const centerPos = preCircleObj.isInit? calcInitCenterPos(): updateCenterPos();
-		const pointsAngleInterval = Math.PI * 2 / params.circle.pointsNum;
-		const newGrid = {
-			id: id,
-			originPos: originPos,
-			centerPos: centerPos,
-			pointsAngleInterval: pointsAngleInterval,
-		}
+		newGrid.centerPos = preCircleObj.isInit? calcInitCenterPos(): updateCenterPos();
+		newGrid.pointsAngleInterval = Math.PI * 2 / params.circle.pointsNum;
 		const newPoints = calcPoints(preGrid, newGrid, preCircleObj, newCircleObj, params, s);
 		return { ...newGrid, points: newPoints };
 	});
 }
 
 export const calcCircleObj = (preCircleObj, params, s) => {
-	const gridNum = preCircleObj.isInit? Math.pow(params.circle.gridPieceNum, 2): preCircleObj.gridNum;
-	const gridSize = preCircleObj.isInit? params.size / params.circle.gridPieceNum: preCircleObj.gridSize;
-	const newCircleObj = {
-		isInit: false,
-		gridNum: gridNum,
-		gridSize: gridSize,
-	};
+	const newCircleObj = {};
+	newCircleObj.isInit = false;
+	newCircleObj.gridNum = preCircleObj.isInit? Math.pow(params.circle.gridPieceNum, 2): preCircleObj.gridNum;
+	newCircleObj.gridSize = preCircleObj.isInit? params.size / params.circle.gridPieceNum: preCircleObj.gridSize;
 	const newGrids = calcGrids(preCircleObj, newCircleObj, params, s);
 	return { ...newCircleObj, grids: newGrids };
 }
 
 export const drawCircleObj = (circleObj, s) => {
 	for (const grid of circleObj.grids) {
-		s.circle(grid.centerPos.x, grid.centerPos.y, 50);
+		s.beginShape();
+		s.curveVertex(grid.points.slice(-1)[0].pos.x, grid.points.slice(-1)[0].pos.y);
+		for (const point of grid.points) {
+			s.curveVertex(point.pos.x, point.pos.y);
+		}
+		s.curveVertex(grid.points[0].pos.x, grid.points[0].pos.y);
+		s.curveVertex(grid.points[1].pos.x, grid.points[1].pos.y);
+		s.endShape();
 	}
 }
