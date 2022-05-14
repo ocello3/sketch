@@ -1,25 +1,42 @@
 export const setCircleParams = (params) => {
 	params.circle = {
-		gridPieceNum: 3,
-		pointsNum: 5,
-		pointsRadiusReducRate: 0.5,
+		gridPieceNum: 10,
+		innerPointsNum: 3,
+		outerPointsNum: 5,
+		pointsRadiusReducRate: 0.7,
 	};
 }
 
-const calcPoints = (preGrid, newGrid, preCircleObj, newCircleObj, params, s) => {
-	const prePoints = preCircleObj.isInit ? Array.from(Array(params.circle.pointsNum), () => 1) : preGrid.points;
-	const newPoints = prePoints.map((_, pointIndex) => {
-		const newPoint = {};
+const calcInnerPoints = (preGrid, newGrid, preCircleObj, newCircleObj, params, s) => {
+	const preInnerPoints = preCircleObj.isInit ? Array.from(Array(params.circle.innerPointsNum), () => 1) : preGrid.innerPoints;
+	const newInnerPoints = preInnerPoints.map((_, pointIndex) => {
+		const newInnerPoint = {};
 		const calcPos = () => {
 			const radius = newCircleObj.gridSize * params.circle.pointsRadiusReducRate * 0.5;
 			const x = newGrid.centerPos.x + radius * Math.cos(newGrid.pointsAngleInterval * pointIndex);
 			const y = newGrid.centerPos.y + radius * Math.sin(newGrid.pointsAngleInterval * pointIndex);
 			return s.createVector(x, y);
 		}
-		newPoint.pos = calcPos();
-		return newPoint;
+		newInnerPoint.pos = calcPos();
+		return newInnerPoint;
 	});
-	return newPoints;
+	return newInnerPoints;
+}
+
+const calcOuterPoints = (preGrid, newGrid, preCircleObj, newCircleObj, params, s) => {
+	const preOuterPoints = preCircleObj.isInit ? Array.from(Array(params.circle.outerPointsNum), () => 1) : preGrid.outerPoints;
+	const newOuterPoints = preOuterPoints.map((_, pointIndex) => {
+		const newOuterPoint = {};
+		const calcPos = () => {
+			const radius = newCircleObj.gridSize * params.circle.pointsRadiusReducRate * 0.5;
+			const x = newGrid.centerPos.x + radius * Math.cos(newGrid.pointsAngleInterval * pointIndex);
+			const y = newGrid.centerPos.y + radius * Math.sin(newGrid.pointsAngleInterval * pointIndex);
+			return s.createVector(x, y);
+		}
+		newOuterPoint.pos = calcPos();
+		return newOuterPoint;
+	});
+	return newOuterPoints;
 }
 
 const calcGrids = (preCircleObj, newCircleObj, params, s) => {
@@ -47,9 +64,10 @@ const calcGrids = (preCircleObj, newCircleObj, params, s) => {
 			return preGrid.centerPos; // need to add
 		}
 		newGrid.centerPos = preCircleObj.isInit? calcInitCenterPos(): updateCenterPos();
-		newGrid.pointsAngleInterval = Math.PI * 2 / params.circle.pointsNum;
-		const newPoints = calcPoints(preGrid, newGrid, preCircleObj, newCircleObj, params, s);
-		return { ...newGrid, points: newPoints };
+		newGrid.pointsAngleInterval = Math.PI * 2 / params.circle.outerPointsNum;
+		const newInnerPoints = calcInnerPoints(preGrid, newGrid, preCircleObj, newCircleObj, params, s);
+		const newOuterPoints = calcOuterPoints(preGrid, newGrid, preCircleObj, newCircleObj, params, s);
+		return { ...newGrid, innerPoints: newInnerPoints, outerPoints: newOuterPoints };
 	});
 }
 
@@ -62,15 +80,23 @@ export const calcCircleObj = (preCircleObj, params, s) => {
 	return { ...newCircleObj, grids: newGrids };
 }
 
-export const drawCircleObj = (circleObj, s) => {
-	for (const grid of circleObj.grids) {
-		s.beginShape();
-		s.curveVertex(grid.points.slice(-1)[0].pos.x, grid.points.slice(-1)[0].pos.y);
-		for (const point of grid.points) {
-			s.curveVertex(point.pos.x, point.pos.y);
-		}
-		s.curveVertex(grid.points[0].pos.x, grid.points[0].pos.y);
-		s.curveVertex(grid.points[1].pos.x, grid.points[1].pos.y);
-		s.endShape();
+const drawPoints = (points, s) => {
+	s.beginShape();
+	s.curveVertex(points.slice(-1)[0].pos.x, points.slice(-1)[0].pos.y);
+	for (const point of points) {
+		s.curveVertex(point.pos.x, point.pos.y);
 	}
+	s.curveVertex(points[0].pos.x, points[0].pos.y);
+	s.curveVertex(points[1].pos.x, points[1].pos.y);
+	s.endShape();
+}
+
+export const drawCircleObj = (circleObj, s) => {
+	s.push();
+	s.noStroke();
+	s.fill(255, 0, 0, 50);
+	for (const grid of circleObj.grids) drawPoints(grid.innerPoints, s);
+	s.fill(0, 0, 255, 50);
+	for (const grid of circleObj.grids) drawPoints(grid.outerPoints, s);
+	s.pop();
 }

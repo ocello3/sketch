@@ -15,16 +15,15 @@ const sketch = s => {
 		// tab.pages[0].addInput(params, 'margin');
 		const tab = gui(s, params, false, false); // audio, seq
 		// synth = setSynth();
-		s.colorMode(s.HSB);
 		s.noLoop();
 		s.frameRate(2);
 	};
 	s.draw = () => {
 		s.background(255);
-		circleObj = calcCircleObj(circleObj, params, s);
-		debug(circleObj.grids[0]);
-		drawCircleObj(circleObj, s);
 		drawFrame(s, params);
+		circleObj = calcCircleObj(circleObj, params, s);
+		// debug(circleObj.grids[0]);
+		drawCircleObj(circleObj, s);
 		updateParams(s, params);
 		// playSynth(balls, synth);
 	};
