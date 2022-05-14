@@ -17,12 +17,12 @@ const sketch = s => {
 		// synth = setSynth();
 		s.colorMode(s.HSB);
 		s.noLoop();
-		// s.frameRate(10);
+		s.frameRate(2);
 	};
 	s.draw = () => {
 		s.background(255);
+		debug(circleObj);
 		circleObj = calcCircleObj(circleObj, params, s);
-		// debug(lineObj.tiles);
 		drawCircleObj(circleObj, s);
 		drawFrame(s, params);
 		updateParams(s, params);

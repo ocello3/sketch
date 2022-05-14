@@ -1,7 +1,26 @@
 export const setCircleParams = (params) => {
 	params.circle = {
 		gridPieceNum: 3,
+		pointsNum: 5,
+		pointsRadiusReducRate: 0.5,
 	};
+}
+
+const calcPoints = (preGrid, newGrid, preCircleObj, newCircleObj, params, s) => {
+	const prePoints = preCircleObj.isInit ? Array.from(Array(params.pointsNum), () => 1) : preGrid.points;
+	const newPoints = prePoints.map((_, pointIndex) => {
+		const calcPos = () => {
+			const radius = newCircleObj.gridSize * params.circle.pointsRadiusReducRate * 0.5;
+			const x = newGrid.centerPos.x + radius * Math.cos(newGrid.pointsAngleInterval * pointIndex);
+			const y = newGrid.centerPos.y + radius * Math.sin(newGrid.pointsAngleInterval * pointIndex);
+			return s.createVector(x, y);
+		}
+		const newPoint = {
+			pos: calcPos(),
+		}
+		return newPoint;
+	});
+	return newPoints;
 }
 
 const calcGrids = (preCircleObj, newCircleObj, params, s) => {
@@ -28,12 +47,15 @@ const calcGrids = (preCircleObj, newCircleObj, params, s) => {
 			return preGrid.centerPos; // need to add
 		}
 		const centerPos = preCircleObj.isInit? calcInitCenterPos(): updateCenterPos();
+		const pointsAngleInterval = Math.PI * 2 / params.circle.pointsNum;
 		const newGrid = {
 			id: id,
 			originPos: originPos,
 			centerPos: centerPos,
+			pointsAngleInterval: pointsAngleInterval,
 		}
-		return newGrid;
+		const newPoints = calcPoints(preGrid, newGrid, preCircleObj, newCircleObj, params, s);
+		return { ...newGrid, points: newPoints };
 	});
 }
 
