@@ -16,7 +16,7 @@ const sketch = s => {
 		const tab = gui(s, params, false, false); // audio, seq
 		// synth = setSynth();
 		s.noLoop();
-		s.frameRate(2);
+		// s.frameRate(2);
 	};
 	s.draw = () => {
 		s.background(255);

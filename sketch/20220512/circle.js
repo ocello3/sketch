@@ -1,42 +1,36 @@
 export const setCircleParams = (params) => {
 	params.circle = {
-		gridPieceNum: 10,
-		innerPointsNum: 3,
-		outerPointsNum: 5,
-		pointsRadiusReducRate: 0.7,
+		gridPieceNum: 8,
+		innerPointsNum: 6,
+		outerPointsNum: 10,
+		radiusRandRate: 0.6,
+		pointsRadiusReducRate: 0.8,
 	};
 }
 
-const calcInnerPoints = (preGrid, newGrid, preCircleObj, newCircleObj, params, s) => {
-	const preInnerPoints = preCircleObj.isInit ? Array.from(Array(params.circle.innerPointsNum), () => 1) : preGrid.innerPoints;
-	const newInnerPoints = preInnerPoints.map((_, pointIndex) => {
-		const newInnerPoint = {};
+const calcPoints = (preGrid, newGrid, preCircleObj, newCircleObj, params, s) => (layer) => {
+	const pointsNum = (layer === 'inner')? params.circle.innerPointsNum: params.circle.outerPointsNum;
+	const calcPrePoints = () => {
+		if (preCircleObj.isInit) return Array.from(Array(pointsNum), () => 1);
+		if (layer === 'inner') return preGrid.innerPoints;
+		if (layer === 'outer') return preGrid.outerPoints;
+		throw layer;
+	}
+	const prePoints = calcPrePoints();
+	const newPoints = prePoints.map((_, pointIndex) => {
+		const newPoint = {};
 		const calcPos = () => {
-			const radius = newCircleObj.gridSize * params.circle.pointsRadiusReducRate * 0.5;
-			const x = newGrid.centerPos.x + radius * Math.cos(newGrid.pointsAngleInterval * pointIndex);
-			const y = newGrid.centerPos.y + radius * Math.sin(newGrid.pointsAngleInterval * pointIndex);
+			const baseRadiusRate = (pointIndex % 2 === 0)? 0.3: 0.5;
+			const radiusBase = newCircleObj.gridSize * params.circle.pointsRadiusReducRate * baseRadiusRate;
+			const randRadius = radiusBase * (1 - params.circle.pointsRadiusReducRate) + radiusBase * params.circle.pointsRadiusReducRate * s.noise(newGrid.centerPos.x, newGrid.centerPos.y, s.frameCount*0.1);
+			const x = newGrid.centerPos.x + randRadius * Math.cos(newGrid.pointsAngleInterval * pointIndex);
+			const y = newGrid.centerPos.y + randRadius * Math.sin(newGrid.pointsAngleInterval * pointIndex);
 			return s.createVector(x, y);
 		}
-		newInnerPoint.pos = calcPos();
-		return newInnerPoint;
+		newPoint.pos = calcPos();
+		return newPoint;
 	});
-	return newInnerPoints;
-}
-
-const calcOuterPoints = (preGrid, newGrid, preCircleObj, newCircleObj, params, s) => {
-	const preOuterPoints = preCircleObj.isInit ? Array.from(Array(params.circle.outerPointsNum), () => 1) : preGrid.outerPoints;
-	const newOuterPoints = preOuterPoints.map((_, pointIndex) => {
-		const newOuterPoint = {};
-		const calcPos = () => {
-			const radius = newCircleObj.gridSize * params.circle.pointsRadiusReducRate * 0.5;
-			const x = newGrid.centerPos.x + radius * Math.cos(newGrid.pointsAngleInterval * pointIndex);
-			const y = newGrid.centerPos.y + radius * Math.sin(newGrid.pointsAngleInterval * pointIndex);
-			return s.createVector(x, y);
-		}
-		newOuterPoint.pos = calcPos();
-		return newOuterPoint;
-	});
-	return newOuterPoints;
+	return newPoints;
 }
 
 const calcGrids = (preCircleObj, newCircleObj, params, s) => {
@@ -65,8 +59,9 @@ const calcGrids = (preCircleObj, newCircleObj, params, s) => {
 		}
 		newGrid.centerPos = preCircleObj.isInit? calcInitCenterPos(): updateCenterPos();
 		newGrid.pointsAngleInterval = Math.PI * 2 / params.circle.outerPointsNum;
-		const newInnerPoints = calcInnerPoints(preGrid, newGrid, preCircleObj, newCircleObj, params, s);
-		const newOuterPoints = calcOuterPoints(preGrid, newGrid, preCircleObj, newCircleObj, params, s);
+		const newPointsFunc = calcPoints(preGrid, newGrid, preCircleObj, newCircleObj, params, s);
+		const newInnerPoints = newPointsFunc('inner');
+		const newOuterPoints = newPointsFunc('outer');
 		return { ...newGrid, innerPoints: newInnerPoints, outerPoints: newOuterPoints };
 	});
 }
@@ -94,9 +89,9 @@ const drawPoints = (points, s) => {
 export const drawCircleObj = (circleObj, s) => {
 	s.push();
 	s.noStroke();
-	s.fill(255, 0, 0, 50);
-	for (const grid of circleObj.grids) drawPoints(grid.innerPoints, s);
-	s.fill(0, 0, 255, 50);
+	s.fill(255, 0, 0, 50); // conver to variance
 	for (const grid of circleObj.grids) drawPoints(grid.outerPoints, s);
+	s.fill(0, 0, 255, 50);
+	for (const grid of circleObj.grids) drawPoints(grid.innerPoints, s);
 	s.pop();
 }
