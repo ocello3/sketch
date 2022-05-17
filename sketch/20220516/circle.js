@@ -1,6 +1,6 @@
 export const setCircleParams = (params) => {
 	params.circle = {
-		gridPieceNum: 8,
+		gridPieceNum: 6,
 		maxCircleNum: 20,
 	};
 }
@@ -72,8 +72,8 @@ export const calcCircleObj = (preCircleObj, params, s, mouseX, mouseY) => {
 
 export const drawCircleObj = (circleObj, s) => {
 	s.push();
-	s.stroke(0);
-	s.noFill();
+	s.noStroke(0);
+	s.fill(0, 15);
 	for (const grid of circleObj.grids) {
 		for (const circle of grid.circle) s.circle(circle.centerPos.x, circle.centerPos.y, circle.radius);
 	}
