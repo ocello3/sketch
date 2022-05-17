@@ -1,7 +1,9 @@
 export const setCircleParams = (params) => {
 	params.circle = {
 		gridPieceNum: 6,
+		minCircleNum: 3,
 		maxCircleNum: 20,
+		angleChangeProb: 0.01,
 	};
 }
 
@@ -9,15 +11,9 @@ const calcCircles = (preGrid, newGrid, preCircleObj, newCircleObj, params, s) =>
 	const newCircles = Array.from(Array(newCircleObj.circleNum), (_, circleIndex) => {
 		const newCircle = {};
 		const diff = newGrid.circleOffsetInterval * circleIndex;
-		const calcCenterPosOffset = () => {
-			if (newGrid.circleDirection === 'above') return s.createVector(0, -diff);
-			if (newGrid.circleDirection === 'below') return s.createVector(0, diff);
-			if (newGrid.circleDirection === 'right') return s.createVector(diff, 0);
-			if (newGrid.circleDirection === 'left') return s.createVector(-diff, 0);
-			throw newGrid.circleDirection;
-		}
-		newCircle.centerPos = p5.Vector.add(newGrid.centerPos, calcCenterPosOffset());
 		newCircle.radius = newCircleObj.gridSize * 0.66 - diff;
+		const rotatedDiff = p5.Vector.rotate(s.createVector(diff, 0), newGrid.circleAngle);
+		newCircle.centerPos = p5.Vector.add(newGrid.centerPos, rotatedDiff);
 		return newCircle;
 	});
 	return newCircles;
@@ -40,14 +36,19 @@ const calcGrids = (preCircleObj, newCircleObj, params, s) => {
 		}
 		newGrid.originPos = preCircleObj.isInit? calcOriginPos(): preGrid.originPos;
 		newGrid.centerPos = p5.Vector.add(newGrid.originPos, s.createVector(newCircleObj.gridSize * 0.5, newCircleObj.gridSize * 0.5));
-		const calcCircleDirection = () => {
+		const calcCircleAngle = () => {
 			const p = Math.random();
-			if (p < 0.25) { return 'right' }
-			else if (p < 0.5) { return 'left' }
-			else if (p < 0.75) { return 'above' }
-			else { return 'below' };
+			if (p < 0.25) { return Math.PI * 0.5 } // right
+			else if (p < 0.5) { return Math.PI } // below
+			else if (p < 0.75) { return Math.PI * 1.5 } // left
+			else { return 0 }; // above
 		}
-		newGrid.circleDirection = preCircleObj.isInit? calcCircleDirection(): preGrid.circleDirection;
+		const calcIsUpdateAngle = () => {
+			const p = Math.random();
+			if (p < params.circle.angleChangeProb) return true;
+			return false;
+		}
+		newGrid.circleAngle = (preCircleObj.isInit || calcIsUpdateAngle())? calcCircleAngle(): preGrid.circleAngle;
 		const calcCenterOffsetInterval = () => {
 			const centerOffset = s.map(newCircleObj.mouseY, 0, params.size, 0, newCircleObj.gridSize * 0.66);
 			return centerOffset / newCircleObj.circleNum;
@@ -65,7 +66,7 @@ export const calcCircleObj = (preCircleObj, params, s, mouseX, mouseY) => {
 	newCircleObj.mouseY = mouseY;
 	newCircleObj.gridNum = preCircleObj.isInit? Math.pow(params.circle.gridPieceNum, 2): preCircleObj.gridNum;
 	newCircleObj.gridSize = preCircleObj.isInit? params.size / params.circle.gridPieceNum: preCircleObj.gridSize;
-	newCircleObj.circleNum = Math.floor(s.map(mouseX, 0, params.size, 1, params.circle.maxCircleNum));
+	newCircleObj.circleNum = Math.floor(s.map(mouseX, 0, params.size, params.circle.minCircleNum, params.circle.maxCircleNum));
 	const newGrids = calcGrids(preCircleObj, newCircleObj, params, s);
 	return { ...newCircleObj, grids: newGrids };
 }
