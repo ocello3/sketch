@@ -17,7 +17,7 @@ const calcCircles = (preGrid, newGrid, preCircleObj, newCircleObj, params, s) =>
 			throw newGrid.circleDirection;
 		}
 		newCircle.centerPos = p5.Vector.add(newGrid.centerPos, calcCenterPosOffset());
-		newCircle.radius = newCircleObj.gridSize * 0.5 - diff;
+		newCircle.radius = newCircleObj.gridSize * 0.66 - diff;
 		return newCircle;
 	});
 	return newCircles;
@@ -49,7 +49,7 @@ const calcGrids = (preCircleObj, newCircleObj, params, s) => {
 		}
 		newGrid.circleDirection = preCircleObj.isInit? calcCircleDirection(): preGrid.circleDirection;
 		const calcCenterOffsetInterval = () => {
-			const centerOffset = s.map(newCircleObj.mouseY, 0, params.size, 0, newCircleObj.gridSize * 0.5);
+			const centerOffset = s.map(newCircleObj.mouseY, 0, params.size, 0, newCircleObj.gridSize * 0.66);
 			return centerOffset / newCircleObj.circleNum;
 		}
 		newGrid.circleOffsetInterval = calcCenterOffsetInterval();
