@@ -4,6 +4,7 @@ export const setCircleParams = (params) => {
 		minCircleNum: 3,
 		maxCircleNum: 20,
 		angleChangeProb: 0.01,
+		angleEasingF: 0.05,
 	};
 }
 
@@ -36,19 +37,31 @@ const calcGrids = (preCircleObj, newCircleObj, params, s) => {
 		}
 		newGrid.originPos = preCircleObj.isInit? calcOriginPos(): preGrid.originPos;
 		newGrid.centerPos = p5.Vector.add(newGrid.originPos, s.createVector(newCircleObj.gridSize * 0.5, newCircleObj.gridSize * 0.5));
-		const calcCircleAngle = () => {
+		const calcIsUpdateTargetAngle = () => {
+			const p = Math.random();
+			if (p < params.circle.angleChangeProb) return true;
+			return false;
+		}
+		newGrid.isUpdateTargetAngle = calcIsUpdateTargetAngle();
+		const calcCircleTargetAngle = () => {
 			const p = Math.random();
 			if (p < 0.25) { return Math.PI * 0.5 } // right
 			else if (p < 0.5) { return Math.PI } // below
 			else if (p < 0.75) { return Math.PI * 1.5 } // left
 			else { return 0 }; // above
 		}
-		const calcIsUpdateAngle = () => {
-			const p = Math.random();
-			if (p < params.circle.angleChangeProb) return true;
-			return false;
+		newGrid.circleTargetAngle = (preCircleObj.isInit || newGrid.isUpdateTargetAngle)? calcCircleTargetAngle(): preGrid.circleTargetAngle;
+		const calcIsReverseRotate = () => {
+			const diff = newGrid.circleTargetAngle - preGrid.circleAngle;
+			return (Math.abs(diff) > Math.PI)? true: false;
 		}
-		newGrid.circleAngle = (preCircleObj.isInit || calcIsUpdateAngle())? calcCircleAngle(): preGrid.circleAngle;
+		newGrid.isReverseRotate = (preCircleObj.isInit || newGrid.isUpdateTargetAngle)? calcIsReverseRotate(): preGrid.isReverseRotate;
+		const calcCircleAngle = () => {
+			const diff = preGrid.circleAngle - newGrid.circleTargetAngle;
+			const progress = newGrid.isReverseRotate? diff * params.circle.angleEasingF * (-1): diff * params.circle.angleEasingF;
+			return preGrid.circleAngle + progress;
+		}
+		newGrid.circleAngle = preCircleObj.isInit? newGrid.circleTargetAngle: calcCircleAngle();
 		const calcCenterOffsetInterval = () => {
 			const centerOffset = s.map(newCircleObj.mouseY, 0, params.size, 0, newCircleObj.gridSize * 0.66);
 			return centerOffset / newCircleObj.circleNum;
