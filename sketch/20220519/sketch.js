@@ -21,7 +21,7 @@ const sketch = s => {
 	s.draw = () => {
 		s.background(255);
 		drawFrame(s, params);
-		circleObj = calcCircleObj(circleObj, params, s, s.mouseX, s.mouseY);
+		circleObj = calcCircleObj(circleObj, params, s,);
 		// debug(circleObj.grids[0]);
 		drawCircleObj(circleObj, s);
 		updateParams(s, params);

@@ -1,5 +1,7 @@
 export const setCircleParams = (params) => {
 	params.circle = {
+		mouseChangeProb: 0.05,
+		mouseEasigF: 0.05,
 		gridPieceNum: 6,
 		minCircleNum: 6,
 		maxCircleNum: 24,
@@ -23,7 +25,6 @@ const calcCircles = (preGrid, newGrid, preCircleObj, newCircleObj, params, s) =>
 } 
 
 const calcGrids = (preCircleObj, newCircleObj, params, s) => {
-	// to do: mouseXとmouseYを左上、左下、中央上、中央、中央下、右上、右中央、右下をtargetPosとしてrandomに割り振り、移動する。
 	const preGrids = preCircleObj.isInit? Array.from(Array(newCircleObj.gridNum), () => 1): preCircleObj.grids;
 	return preGrids.map((preGrid, gridIndex) => {
 		const newGrid = {};
@@ -61,7 +62,7 @@ const calcGrids = (preCircleObj, newCircleObj, params, s) => {
 		}
 		newGrid.circleAngle = preCircleObj.isInit? newGrid.circleTargetAngle: calcCircleAngle();
 		const calcCenterOffsetInterval = () => {
-			const centerOffset = s.map(newCircleObj.mouseY, 0, params.size, newCircleObj.gridSize * params.circle.minCenterOffsetRate, newCircleObj.gridSize * params.circle.maxCenterOffsetRate);
+			const centerOffset = s.map(newCircleObj.currentMousePos.y, 0, params.size, newCircleObj.gridSize * params.circle.minCenterOffsetRate, newCircleObj.gridSize * params.circle.maxCenterOffsetRate);
 			return centerOffset / newCircleObj.circleNum;
 		}
 		newGrid.circleOffsetInterval = calcCenterOffsetInterval();
@@ -70,14 +71,40 @@ const calcGrids = (preCircleObj, newCircleObj, params, s) => {
 	});
 }
 
-export const calcCircleObj = (preCircleObj, params, s, mouseX, mouseY) => {
+export const calcCircleObj = (preCircleObj, params, s) => {
 	const newCircleObj = {};
 	newCircleObj.isInit = false;
-	newCircleObj.mouseX = mouseX;
-	newCircleObj.mouseY = mouseY;
+	const calcIsUpdateTargetMousePos = () => {
+		const p = Math.random();
+		if (p < params.circle.mouseChangeProb) return true;
+		return false;
+	}
+	newCircleObj.isUpdateTargetMousePos = calcIsUpdateTargetMousePos();
+	const calcTargetMousePos = () => {
+		const calcX = () => {
+			const p = Math.random();
+			if (p < 0.33) { return 0 } // right
+			else if (p < 0.66) { return params.size * 0.5} // middle
+			else { return params.size }; // left
+		}
+		const calcY = () => {
+			const p = Math.random();
+			if (p < 0.33) { return 0 } // above
+			else if (p < 0.66) { return params.size * 0.5} // middle
+			else { return params.size }; // below
+		}
+		return s.createVector(calcX(), calcY());
+	}
+	newCircleObj.targetMousePos = (preCircleObj.isInit | newCircleObj.isUpdateTargetMousePos)? calcTargetMousePos(): preCircleObj.targetMousePos;
+	const calcCurrentMousePos = () => {
+		const diff = p5.Vector.sub(newCircleObj.targetMousePos, preCircleObj.currentMousePos);
+		const progress = p5.Vector.mult(diff, params.circle.mouseEasigF);
+		return p5.Vector.add(preCircleObj.currentMousePos, progress);
+	}
+	newCircleObj.currentMousePos = preCircleObj.isInit? newCircleObj.targetMousePos: calcCurrentMousePos();
 	newCircleObj.gridNum = preCircleObj.isInit? Math.pow(params.circle.gridPieceNum, 2): preCircleObj.gridNum;
 	newCircleObj.gridSize = preCircleObj.isInit? params.size / params.circle.gridPieceNum: preCircleObj.gridSize;
-	newCircleObj.circleNum = Math.floor(s.map(mouseX, 0, params.size, params.circle.minCircleNum, params.circle.maxCircleNum));
+	newCircleObj.circleNum = Math.floor(s.map(newCircleObj.currentMousePos.x, 0, params.size, params.circle.minCircleNum, params.circle.maxCircleNum));
 	const newGrids = calcGrids(preCircleObj, newCircleObj, params, s);
 	return { ...newCircleObj, grids: newGrids };
 }
