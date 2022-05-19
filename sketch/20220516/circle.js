@@ -1,8 +1,10 @@
 export const setCircleParams = (params) => {
 	params.circle = {
 		gridPieceNum: 6,
-		minCircleNum: 3,
-		maxCircleNum: 20,
+		minCircleNum: 6,
+		maxCircleNum: 24,
+		minCenterOffsetRate: -1,
+		maxCenterOffsetRate: 1,
 		angleChangeProb: 0.01,
 		angleEasingF: 0.05,
 	};
@@ -43,27 +45,22 @@ const calcGrids = (preCircleObj, newCircleObj, params, s) => {
 			return false;
 		}
 		newGrid.isUpdateTargetAngle = calcIsUpdateTargetAngle();
-		const calcCircleTargetAngle = () => {
+		const calcTargetAgnle = () => {
 			const p = Math.random();
-			if (p < 0.25) { return Math.PI * 0.5 } // right
-			else if (p < 0.5) { return Math.PI } // below
-			else if (p < 0.75) { return Math.PI * 1.5 } // left
-			else { return 0 }; // above
+			if (p < 0.25) { return preGrid.targetAngle - Math.PI }
+			else if (p < 0.5) { return preGrid.targetAngle - Math.PI * 0.5 }
+			else if (p < 0.75) { return preGrid.targetAngle + Math.PI * 0.5 }
+			else { return preGrid.targetAngle + Math.PI };
 		}
-		newGrid.circleTargetAngle = (preCircleObj.isInit || newGrid.isUpdateTargetAngle)? calcCircleTargetAngle(): preGrid.circleTargetAngle;
-		const calcIsReverseRotate = () => {
-			const diff = newGrid.circleTargetAngle - preGrid.circleAngle;
-			return (Math.abs(diff) > Math.PI)? true: false;
-		}
-		newGrid.isReverseRotate = (preCircleObj.isInit || newGrid.isUpdateTargetAngle)? calcIsReverseRotate(): preGrid.isReverseRotate;
+		newGrid.circleTargetAngle = (preCircleObj.isInit || newGrid.isUpdateTargetAngle)? calcTargetAgnle(): preGrid.circleTargetAngle;
 		const calcCircleAngle = () => {
-			const diff = preGrid.circleAngle - newGrid.circleTargetAngle;
-			const progress = newGrid.isReverseRotate? diff * params.circle.angleEasingF * (-1): diff * params.circle.angleEasingF;
-			return preGrid.circleAngle + progress;
+				const diff = preGrid.circleAngle - newGrid.circleTargetAngle;
+				const progress = diff * params.circle.angleEasingF;
+				return preGrid.circleAngle + progress;
 		}
 		newGrid.circleAngle = preCircleObj.isInit? newGrid.circleTargetAngle: calcCircleAngle();
 		const calcCenterOffsetInterval = () => {
-			const centerOffset = s.map(newCircleObj.mouseY, 0, params.size, 0, newCircleObj.gridSize * 0.66);
+			const centerOffset = s.map(newCircleObj.mouseY, 0, params.size, newCircleObj.gridSize * params.circle.minCenterOffsetRate, newCircleObj.gridSize * params.circle.maxCenterOffsetRate);
 			return centerOffset / newCircleObj.circleNum;
 		}
 		newGrid.circleOffsetInterval = calcCenterOffsetInterval();

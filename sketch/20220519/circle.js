@@ -1,8 +1,10 @@
 export const setCircleParams = (params) => {
 	params.circle = {
 		gridPieceNum: 6,
-		minCircleNum: 3,
-		maxCircleNum: 20,
+		minCircleNum: 6,
+		maxCircleNum: 24,
+		minCenterOffsetRate: 0,
+		maxCenterOffsetRate: 1.2,
 		angleChangeProb: 0.01,
 		angleEasingF: 0.05,
 	};
@@ -21,6 +23,7 @@ const calcCircles = (preGrid, newGrid, preCircleObj, newCircleObj, params, s) =>
 } 
 
 const calcGrids = (preCircleObj, newCircleObj, params, s) => {
+	// to do: mouseXとmouseYを左上、左下、中央上、中央、中央下、右上、右中央、右下をtargetPosとしてrandomに割り振り、移動する。
 	const preGrids = preCircleObj.isInit? Array.from(Array(newCircleObj.gridNum), () => 1): preCircleObj.grids;
 	return preGrids.map((preGrid, gridIndex) => {
 		const newGrid = {};
@@ -51,19 +54,14 @@ const calcGrids = (preCircleObj, newCircleObj, params, s) => {
 			else { return 0 }; // above
 		}
 		newGrid.circleTargetAngle = (preCircleObj.isInit || newGrid.isUpdateTargetAngle)? calcCircleTargetAngle(): preGrid.circleTargetAngle;
-		const calcIsReverseRotate = () => {
-			const diff = newGrid.circleTargetAngle - preGrid.circleAngle;
-			return (Math.abs(diff) > Math.PI)? true: false;
-		}
-		newGrid.isReverseRotate = (preCircleObj.isInit || newGrid.isUpdateTargetAngle)? calcIsReverseRotate(): preGrid.isReverseRotate;
 		const calcCircleAngle = () => {
-			const diff = preGrid.circleAngle - newGrid.circleTargetAngle;
-			const progress = newGrid.isReverseRotate? diff * params.circle.angleEasingF * (-1): diff * params.circle.angleEasingF;
+			const diff = newGrid.circleTargetAngle - preGrid.circleAngle;
+			const progress = diff * params.circle.angleEasingF;
 			return preGrid.circleAngle + progress;
 		}
 		newGrid.circleAngle = preCircleObj.isInit? newGrid.circleTargetAngle: calcCircleAngle();
 		const calcCenterOffsetInterval = () => {
-			const centerOffset = s.map(newCircleObj.mouseY, 0, params.size, 0, newCircleObj.gridSize * 0.66);
+			const centerOffset = s.map(newCircleObj.mouseY, 0, params.size, newCircleObj.gridSize * params.circle.minCenterOffsetRate, newCircleObj.gridSize * params.circle.maxCenterOffsetRate);
 			return centerOffset / newCircleObj.circleNum;
 		}
 		newGrid.circleOffsetInterval = calcCenterOffsetInterval();
