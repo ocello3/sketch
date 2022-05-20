@@ -1,7 +1,7 @@
 export const setCircleParams = (params) => {
 	params.circle = {
-		mouseChangeProb: 0.05,
-		mouseEasigF: 0.05,
+		mouseChangeProb: 0.01,
+		mouseEasigF: 0.01,
 		gridPieceNum: 6,
 		minCircleNum: 6,
 		maxCircleNum: 24,
@@ -108,10 +108,10 @@ export const calcCircleObj = (preCircleObj, params, s) => {
 		return preCircleObj.mousePosTargetDist;
 	}
 	newCircleObj.mousePosTargetDist = calcMousePosTargetDist();
-	const calcProgress = () => { // ここを制限する。
+	const calcProgress = () => {
 		if (newCircleObj.mousePosTargetDist === 0) return 0;
 		const currentDist = p5.Vector.dist(newCircleObj.currentMousePos, newCircleObj.targetMousePos);
-		return currentDist / newCircleObj.mousePosTargetDist;
+		return 1 - currentDist / newCircleObj.mousePosTargetDist;
 	}
 	newCircleObj.progress = preCircleObj.isInit? 0: calcProgress();
 	const calcTargetColor = () => {
