@@ -22,7 +22,7 @@ const sketch = s => {
 		s.background(255);
 		drawFrame(s, params);
 		circleObj = calcCircleObj(circleObj, params, s,);
-		// debug(circleObj.grids[0]);
+		// debug(circleObj);
 		drawCircleObj(circleObj, s);
 		updateParams(s, params);
 		// playSynth(balls, synth);

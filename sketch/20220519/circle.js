@@ -102,6 +102,31 @@ export const calcCircleObj = (preCircleObj, params, s) => {
 		return p5.Vector.add(preCircleObj.currentMousePos, progress);
 	}
 	newCircleObj.currentMousePos = preCircleObj.isInit? newCircleObj.targetMousePos: calcCurrentMousePos();
+	const calcMousePosTargetDist = () => {
+		if (preCircleObj.isInit) return 0;
+		if (newCircleObj.isUpdateTargetMousePos) return p5.Vector.dist(newCircleObj.targetMousePos, preCircleObj.targetMousePos);
+		return preCircleObj.mousePosTargetDist;
+	}
+	newCircleObj.mousePosTargetDist = calcMousePosTargetDist();
+	const calcProgress = () => { // ここを制限する。
+		if (newCircleObj.mousePosTargetDist === 0) return 0;
+		const currentDist = p5.Vector.dist(newCircleObj.currentMousePos, newCircleObj.targetMousePos);
+		return currentDist / newCircleObj.mousePosTargetDist;
+	}
+	newCircleObj.progress = preCircleObj.isInit? 0: calcProgress();
+	const calcTargetColor = () => {
+		const alpha = 25;
+		const colors = [
+			s.color(103, 170, 249, alpha),
+			s.color(155, 189, 249, alpha),
+			s.color(196, 224, 249, alpha),
+			s.color(185, 95, 137, alpha),
+		];
+		const index = Math.floor(Math.random() * 4);
+		return colors[index];
+	}
+	newCircleObj.targetColor = (preCircleObj.isInit | newCircleObj.isUpdateTargetMousePos)? calcTargetColor(): preCircleObj.targetColor;
+	newCircleObj.currentColor = (preCircleObj.isInit)? newCircleObj.targetColor: s.lerpColor(preCircleObj.currentColor, newCircleObj.targetColor, newCircleObj.progress);
 	newCircleObj.gridNum = preCircleObj.isInit? Math.pow(params.circle.gridPieceNum, 2): preCircleObj.gridNum;
 	newCircleObj.gridSize = preCircleObj.isInit? params.size / params.circle.gridPieceNum: preCircleObj.gridSize;
 	newCircleObj.circleNum = Math.floor(s.map(newCircleObj.currentMousePos.x, 0, params.size, params.circle.minCircleNum, params.circle.maxCircleNum));
@@ -112,7 +137,7 @@ export const calcCircleObj = (preCircleObj, params, s) => {
 export const drawCircleObj = (circleObj, s) => {
 	s.push();
 	s.noStroke(0);
-	s.fill(0, 15);
+	s.fill(circleObj.currentColor);
 	for (const grid of circleObj.grids) {
 		for (const circle of grid.circle) s.circle(circle.centerPos.x, circle.centerPos.y, circle.radius);
 	}
