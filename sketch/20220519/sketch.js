@@ -11,9 +11,9 @@ const sketch = s => {
 	s.setup = () => {
 		params = setParams();
 		s.createCanvas(params.size, params.size);
-		setCircleParams(params);
 		// tab.pages[0].addInput(params, 'margin');
 		const tab = gui(s, params, false, false); // audio, seq
+		setCircleParams(params, tab);
 		// synth = setSynth();
 		s.noLoop();
 		// s.frameRate(10);

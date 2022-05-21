@@ -1,22 +1,35 @@
-export const setCircleParams = (params) => {
+export const setCircleParams = (params, tab) => {
 	params.circle = {
 		mouseChangeProb: 0.01,
-		mouseEasigF: 0.01,
-		gridPieceNum: 6,
-		minCircleNum: 6,
-		maxCircleNum: 24,
-		minCenterOffsetRate: 0,
-		maxCenterOffsetRate: 1.2,
+		mouseEasigF: 0.02,
+		gridPieceNum: 5,
+		minCircleNum: 15,
+		maxCircleNum: 40,
+		circleRadiusReducRate: 0.5,
+		minCenterOffsetRate: 0.15,
+		maxCenterOffsetRate: 1.15,
 		angleChangeProb: 0.01,
-		angleEasingF: 0.05,
+		angleEasingF: 0.02,
+		colorAlpha: 70,
 	};
+	tab.pages[1].addInput(params.circle, 'mouseChangeProb', {min: 0.005, max: 0.1});
+	tab.pages[1].addInput(params.circle, 'mouseEasigF', {min: 0.01, max: 0.1});
+	tab.pages[1].addInput(params.circle, 'minCircleNum', { step: 1, min: 3, max: 15});
+	tab.pages[1].addInput(params.circle, 'maxCircleNum', { step: 1, min: 20, max: 40});
+	tab.pages[1].addInput(params.circle, 'circleRadiusReducRate', {min: 0.3, max: 1.3});
+	tab.pages[1].addInput(params.circle, 'minCenterOffsetRate', {min: -0.5, max: 0.5});
+	tab.pages[1].addInput(params.circle, 'maxCenterOffsetRate', {min: 0.5, max: 1.5});
+	tab.pages[1].addInput(params.circle, 'angleChangeProb', {min: 0.005, max: 0.1});
+	tab.pages[1].addInput(params.circle, 'angleEasingF', {min: 0.01, max: 0.1});
+	tab.pages[1].addInput(params.circle, 'colorAlpha', { step: 1, min: 5, max: 150});
+	return false;
 }
 
 const calcCircles = (preGrid, newGrid, preCircleObj, newCircleObj, params, s) => {
 	const newCircles = Array.from(Array(newCircleObj.circleNum), (_, circleIndex) => {
 		const newCircle = {};
 		const diff = newGrid.circleOffsetInterval * circleIndex;
-		newCircle.radius = newCircleObj.gridSize * 0.66 - diff;
+		newCircle.radius = newCircleObj.gridSize * params.circle.circleRadiusReducRate - diff;
 		const rotatedDiff = p5.Vector.rotate(s.createVector(diff, 0), newGrid.circleAngle);
 		newCircle.centerPos = p5.Vector.add(newGrid.centerPos, rotatedDiff);
 		return newCircle;
@@ -115,12 +128,11 @@ export const calcCircleObj = (preCircleObj, params, s) => {
 	}
 	newCircleObj.progress = preCircleObj.isInit? 0: calcProgress();
 	const calcTargetColor = () => {
-		const alpha = 25;
 		const colors = [
-			s.color(103, 170, 249, alpha),
-			s.color(155, 189, 249, alpha),
-			s.color(196, 224, 249, alpha),
-			s.color(185, 95, 137, alpha),
+			s.color(103, 170, 249, params.circle.colorAlpha),
+			s.color(155, 189, 249, params.circle.colorAlpha),
+			s.color(196, 224, 249, params.circle.colorAlpha),
+			s.color(185, 95, 137, params.circle.colorAlpha),
 		];
 		const index = Math.floor(Math.random() * 4);
 		return colors[index];

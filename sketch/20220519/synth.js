@@ -21,7 +21,7 @@ const setSampler = () => {
 
 export const setSynth = () => {
 	const synth = {};
-	synth.monoSynth = setMonoSynth(); // 日本語フォントのテスト
+	synth.monoSynth = setMonoSynth();
 	synth.sampler = setSampler();
 	/*
 	synth.loop = new Tone.Loop((time) => {
