@@ -44,8 +44,6 @@ export const setSynth = (params, tab) => {
 	return synth;
 }
 
-// panをcenterPos.xに合わせる
-
 export const playSynth = (circleObj, synth, params, s) => {
 	if (circleObj.isUpdateTargetMousePos) {
 		const pan = s.map(circleObj.currentMousePos.x, 0, params.size, -1, 1);
