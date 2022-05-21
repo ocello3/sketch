@@ -74,11 +74,8 @@ const calcGrids = (preCircleObj, newCircleObj, params, s) => {
 			return preGrid.circleAngle + progress;
 		}
 		newGrid.circleAngle = preCircleObj.isInit? newGrid.circleTargetAngle: calcCircleAngle();
-		const calcCenterOffsetInterval = () => {
-			const centerOffset = s.map(newCircleObj.currentMousePos.y, 0, params.size, newCircleObj.gridSize * params.circle.minCenterOffsetRate, newCircleObj.gridSize * params.circle.maxCenterOffsetRate);
-			return centerOffset / newCircleObj.circleNum;
-		}
-		newGrid.circleOffsetInterval = calcCenterOffsetInterval();
+		newGrid.circleOffset = s.map(newCircleObj.currentMousePos.y, 0, params.size, newCircleObj.gridSize * params.circle.minCenterOffsetRate, newCircleObj.gridSize * params.circle.maxCenterOffsetRate);
+		newGrid.circleOffsetInterval = newGrid.circleOffset / newCircleObj.circleNum;
 		const newCircles = calcCircles(preGrid, newGrid, preCircleObj, newCircleObj, params, s);
 		return { ...newGrid, circle: newCircles };
 	});

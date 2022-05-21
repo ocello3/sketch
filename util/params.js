@@ -60,6 +60,7 @@ export const gui = (s, params, audio=false, seq=false) => {
 		pages: [
 			{title: 'default'},
 			{title: 'sketch'},
+			{title: 'sound'},
 		],
 	});
 	tab.pages[0].addButton({ title: 'on/off', label: 'play' }).on('click', () => {
