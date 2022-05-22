@@ -1,6 +1,6 @@
 export const setCheckboxParams = (params, tab) => {
 	params.checkbox = {
-		pieceNum: 30,
+		pieceNum: 20,
 	};
 	// tab.pages[1].addInput(params.circle, 'minCircleNum', { step: 1, min: 3, max: 15});
 	return false;
@@ -42,9 +42,16 @@ export const calcCheckboxObj = (preCheckboxObj, params, s) => {
 	return { ...newCheckboxObj, checkboxes: newCheckboxes };
 }
 
-export const updateCheckboxDoms = (checkboxDoms, checkboxObj, params, s) => {
+export const updateCheckboxDoms = (pg, checkboxDoms, checkboxObj, params, s) => {
 	checkboxDoms.forEach((checkboxDom, domIndex) => {
 		const checkbox = checkboxObj.checkboxes[domIndex];
 		checkboxDom.position(checkbox.pos.x, checkbox.pos.y);
+		const color = s.color(pg.get(checkbox.pos.x, checkbox.pos.y));
+		const bright = (s.red(color) + s.green(color) + s.blue(color)) * 0.33;
+		if (bright < 0.5) {
+			checkboxDom.checked(false);
+		} else {
+			checkboxDom.checked(true);
+		}
 	});
 }

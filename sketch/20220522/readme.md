@@ -10,5 +10,9 @@ generative design P_2_1_4_01
 ```
 const checkbox = s.createCheckbox('label', false); // 作成
 checkbox.position(50, 100); // 位置指定
-
+checkbox.checked(true); // チェックボックスのon/off
 ```
+
+## 変更点
+20字程度のテキストを準備し、新幹線のニュースのように流す。
+テキストの切替時に発音、その後、ドット通過時に小音量の発音をする。
