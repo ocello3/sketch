@@ -1,8 +1,9 @@
 export const setCheckboxParams = (params, tab) => {
 	params.checkbox = {
 		pieceNum: 20,
+		sizeRate: 0.002,
 	};
-	// tab.pages[1].addInput(params.circle, 'minCircleNum', { step: 1, min: 3, max: 15});
+	tab.pages[1].addInput(params.checkbox, 'sizeRate', { min: 0.0005, max: 0.005});
 	return false;
 }
 
