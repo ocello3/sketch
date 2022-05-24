@@ -32,7 +32,7 @@ const sketch = s => {
 		textObj = calcTextObj(textObj, params, s);
 		drawText(textObj, pg, params);
 		checkboxObj = calcCheckboxObj(checkboxObj, params, s);
-		// debug(circleObj);
+		// debug(textObj);
 		updateCheckboxDoms(pg, checkboxDoms, checkboxObj, params, s);
 		// s.image(pg, 0, 0, params.size, params.size);
 		drawFrame(s, params);
