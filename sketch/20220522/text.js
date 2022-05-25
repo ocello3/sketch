@@ -1,7 +1,7 @@
 export const setTextParams = (params, tab) => {
     params.text = {
-        velocityRate: 0.02,
-				text: '今日はやる気がありません。',
+        velocityRate: 0.08,
+				text: 'p5js',
 				nextText: '',
 				reset: false,
     };
@@ -27,8 +27,10 @@ export const calcTextObj = (preTextObj, params, s) => {
     const newTextObj = {};
 		if (preTextObj.isInit || params.text.reset === true) s.textSize(params.size * 0.7);
 		newTextObj.textWidth = (preTextObj.isInit || params.text.reset === true)? s.textWidth(params.text.text): preTextObj.textWidth;
+		newTextObj.isReset = params.text.reset;
+		newTextObj.isOver = preTextObj.isInit? false: preTextObj.pos.x < (-1) * newTextObj.textWidth;
     const calcPos = () => {
-        const x = (preTextObj.isInit || params.text.reset === true || preTextObj.pos.x < (-1) * newTextObj.textWidth)? 0: preTextObj.pos.x - params.size * params.text.velocityRate;
+        const x = (preTextObj.isInit || newTextObj.isReset || newTextObj.isOver)? 0: preTextObj.pos.x - params.size * params.text.velocityRate;
         const y = preTextObj.isInit? params.size * 0.5: preTextObj.pos.y;
         return s.createVector(x, y);
     }

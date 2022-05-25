@@ -3,12 +3,12 @@ export const setCheckboxParams = (params, tab) => {
 		pieceNum: 20,
 		sizeRate: 0.002,
 	};
-	tab.pages[1].addInput(params.checkbox, 'sizeRate', { min: 0.0005, max: 0.005});
+	tab.pages[1].addInput(params.checkbox, 'sizeRate', { min: 0.0005, max: 0.005 });
 	return false;
 }
 
 const calcCheckboxes = (preCheckboxObj, newCheckboxObj, params, s) => {
-	const preCheckboxes = preCheckboxObj.isInit? Array.from(Array(newCheckboxObj.num), () => 1): preCheckboxObj.checkboxes;
+	const preCheckboxes = preCheckboxObj.isInit ? Array.from(Array(newCheckboxObj.num), () => 1) : preCheckboxObj.checkboxes;
 	const newCheckboxes = preCheckboxes.map((preCheckbox, checkboxIndex) => {
 		const newCheckbox = {};
 		const calcId = () => {
@@ -16,19 +16,19 @@ const calcCheckboxes = (preCheckboxObj, newCheckboxObj, params, s) => {
 			const yId = Math.floor(checkboxIndex / params.checkbox.pieceNum);
 			return s.createVector(xId, yId);
 		}
-		newCheckbox.id = preCheckboxObj.isInit? calcId(): preCheckbox.id;
+		newCheckbox.id = preCheckboxObj.isInit ? calcId() : preCheckbox.id;
 		const calcPosOffset = () => {
 			const internalLength = (params.checkbox.pieceNum - 1) * newCheckboxObj.interval;
 			const totalMargin = params.size - internalLength;
 			return totalMargin * 0.5;
 		}
-		newCheckbox.posOffset = preCheckboxObj.isInit? calcPosOffset(): preCheckbox.posOffset;
+		newCheckbox.posOffset = preCheckboxObj.isInit ? calcPosOffset() : preCheckbox.posOffset;
 		const calcPos = () => {
 			const xPos = newCheckboxObj.interval * newCheckbox.id.x + newCheckbox.posOffset;
 			const yPos = newCheckboxObj.interval * newCheckbox.id.y + newCheckbox.posOffset;
 			return s.createVector(xPos, yPos);
 		}
-		newCheckbox.pos = preCheckboxObj.isInit? calcPos(): preCheckbox.pos;
+		newCheckbox.pos = preCheckboxObj.isInit ? calcPos() : preCheckbox.pos;
 		return newCheckbox;
 	});
 	return newCheckboxes;
@@ -37,8 +37,8 @@ const calcCheckboxes = (preCheckboxObj, newCheckboxObj, params, s) => {
 export const calcCheckboxObj = (preCheckboxObj, params, s) => {
 	const newCheckboxObj = {};
 	newCheckboxObj.isInit = false;
-	newCheckboxObj.num = preCheckboxObj.isInit? Math.pow(params.checkbox.pieceNum, 2): preCheckboxObj.num;
-	newCheckboxObj.interval = preCheckboxObj.isInit? params.size / params.checkbox.pieceNum: preCheckboxObj.interval;
+	newCheckboxObj.num = preCheckboxObj.isInit ? Math.pow(params.checkbox.pieceNum, 2) : preCheckboxObj.num;
+	newCheckboxObj.interval = preCheckboxObj.isInit ? params.size / params.checkbox.pieceNum : preCheckboxObj.interval;
 	const newCheckboxes = calcCheckboxes(preCheckboxObj, newCheckboxObj, params, s);
 	return { ...newCheckboxObj, checkboxes: newCheckboxes };
 }
