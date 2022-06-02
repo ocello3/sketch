@@ -6,7 +6,7 @@ import { walker } from './walker.js';
 
 const sketch = s => {
 	let params; // size
-	let walkerObj = {};
+	let walkerObj;
 	// let synth;
 	s.setup = () => {
 		params = setParams();
