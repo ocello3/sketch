@@ -1,18 +1,20 @@
 const setParams = (params, tab) => {
 	params.walker = {
-		num: 10,
-		step: 20,
-		isProgressProb: 0.25,
+		num: 20,
+		step: 50,
+		isProgressProb: 0.02,
+		easingF: 0.2,
 	}
 	const _param = params.walker;
 	const _tab = tab.pages[1];
 	_tab.addInput(_param, 'step', { step: 1, min: 1, max: 50 });
-	_tab.addInput(_param, 'isProgressProb', { step: 0.1, min: 0.1, max: 0.5 });
+	_tab.addInput(_param, 'isProgressProb', { step: 0.01, min: 0.01, max: 0.1 });
+	_tab.addInput(_param, 'easingF', { step: 0.01, min: 0.01, max: 0.5 });
 	return false;
 }
 
 const calc = (preObj, params, s) => {
-	const { num, step, isProgressProb } = params.walker;
+	const { num, step, isProgressProb, easingF } = params.walker;
 	const isInit = (s.frameCount === 1);
 	if (isInit) {
 		preObj = {};
@@ -22,15 +24,16 @@ const calc = (preObj, params, s) => {
 	newObj.walkers = preObj.walkers.map((preWalker, walkerIndex) => {
 		if (isInit) {
 			preWalker = {};
-			preWalker.pos = s.createVector(params.size * 0.5, params.size * 0.5);
+			preWalker.targetPos = s.createVector(params.size * 0.5, params.size * 0.5);
+			preWalker.pos = preWalker.targetPos;
 		}
 		const newWalker = { ...preWalker };
-		const { pos } = preWalker;
+		const { targetPos, pos } = preWalker;
 		newWalker.dist = {
-			above: pos.y,
-			below: params.size - pos.y,
-			left: pos.x,
-			right: params.size - pos.x
+			above: targetPos.y,
+			below: params.size - targetPos.y,
+			left: targetPos.x,
+			right: params.size - targetPos.x
 		}
 		newWalker.rate = (() => {
 			const calcRate = (dist, before = 0) => {
@@ -59,8 +62,13 @@ const calc = (preObj, params, s) => {
 		})();
 		newWalker.prob2 = Math.random();
 		newWalker.isProgress = (newWalker.prob2 < isProgressProb);
-		newWalker.pos = newWalker.isProgress ? p5.Vector.add(pos, newWalker.progress) : pos;
-		newWalker.prePos = pos;
+		newWalker.targetPos = newWalker.isProgress ? p5.Vector.add(targetPos, newWalker.progress) : targetPos;
+		newWalker.preTargetPos = targetPos;
+		newWalker.pos = (() => {
+			const diff = p5.Vector.sub(newWalker.targetPos, pos);
+			const progress = p5.Vector.mult(diff, easingF);
+			return p5.Vector.add(pos, progress);
+		})();
 		return newWalker;
 	});
 	return newObj;
@@ -68,16 +76,21 @@ const calc = (preObj, params, s) => {
 
 const draw = (obj, params, s) => {
 	s.push();
+	s.strokeWeight(2);
+	s.stroke(0, 100);
 	s.noFill();
-	// s.beginShape();
+	s.beginShape();
 	for (const walker of obj.walkers) {
-		const { pos, prePos } = walker;
-		s.stroke(0);
-		// s.curveVertex(prePos.x, prePos.y);
-		// s.curveVertex(pos.x, pos.y);
-		s.line(prePos.x, prePos.y, pos.x, pos.y);
+		const { isProgress, pos, preTargetPos, targetPos } = walker;
+		if (isProgress) s.vertex(pos.x, pos.y);
 	}
-	// s.endShape();
+	s.endShape();
+	for (const walker of obj.walkers) {
+		const { isProgress, pos, preTargetPos, targetPos } = walker;
+		s.noFill();
+		s.point(pos.x, pos.y);
+		s.line(preTargetPos.x, preTargetPos.y, targetPos.x, targetPos.y);
+	}
 	s.pop();
 }
 

@@ -19,7 +19,7 @@ const sketch = s => {
 		// s.frameRate(10);
 	};
 	s.draw = () => {
-		s.background(255, 50);
+		s.background(255, 100);
 		// text
 		walkerObj = walker.calc(walkerObj, params, s);
 		walker.draw(walkerObj, params, s);
