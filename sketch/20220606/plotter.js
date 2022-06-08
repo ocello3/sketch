@@ -26,7 +26,7 @@ const update = (preObj, params, s) => {
 	const { xPosSD, yPosSD, rSD, gSD, bSD } = params.plotter;
 	const newObj = { ...preObj };
 	newObj.plotters = preObj.plotters.map((prePlotter, plotterIndex) => {
-		// const { pos } = preplotter;
+		// const { pos } = preplotter; //
 		const newPlotter = { ...prePlotter };
 		newPlotter.pos = (() => {
 			const x = s.randomGaussian(params.size / 2, params.size / xPosSD);
