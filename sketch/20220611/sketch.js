@@ -21,7 +21,7 @@ const sketch = s => {
 		s.background(255);
 	};
 	s.draw = () => {
-		// s.background(255, 2);
+		s.background(255);
 		// text
 		moverObj = mover.update(moverObj, params, s);
 		mover.draw(moverObj, params, s);
