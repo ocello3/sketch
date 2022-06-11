@@ -1,16 +1,20 @@
 const init = (params, s, tab) => {
 	params.mover = {
-		num: 5,
+		num: 10,
 		gravity: 9.8,
+		windF: 5,
 		massMin: 10,
 		massMax: 20,
 		velXmax: 5,
 		velYmax: 5,
 		bufferRate: 0.95,
+		bufferRateMin: 0.9,
+		fontSizeRate: 0.007,
 	}
 	const _param = params.mover;
 	const _tab = tab.pages[1];
-	// _tab.addInput(_param, 'step', { step: 1, min: 1, max: 50 }); //
+	_tab.addInput(_param, 'windF', { min: 0, max: 10 });
+	_tab.addInput(_param, 'bufferRate', { min: _param.bufferRateMin, max: 1.1 });
 	const moverObj = {};
 	const { num, gravity, massMin, massMax, velXmax, velYmax } = _param;
 	moverObj.movers = Array.from(Array(num), () => {
@@ -38,12 +42,17 @@ const update = (preObj, params, s) => {
 	const newObj = { ...preObj };
 	newObj.movers = preObj.movers.map((preMover) => {
 		const newMover = { ...preMover };
-		const { bufferRate } = params.mover;
-		newMover.acc = preMover.gravityAcc;
+		const { windF, bufferRate } = params.mover;
+		newMover.windAcc = s.createVector(windF / preMover.mass, 0);
+		newMover.acc = (() => {
+			const gravity = preMover.gravityAcc;
+			const wind = newMover.windAcc;
+			return p5.Vector.add(gravity, wind);
+		})();
 		const updatePos = (newVel) => p5.Vector.add(preMover.pos, newVel);
 		const updateVel = (isXOver, isYOver) => {
 			const newVel = p5.Vector.add(preMover.vel, newMover.acc);
-			const x = isXOver? newVel.x * (-1): newVel.x;
+			const x = isXOver? newVel.x * (-1) * bufferRate: newVel.x;
 			const y = isYOver? newVel.y * (-1) * bufferRate: newVel.y;
 			return s.createVector(x, y);
 		}
@@ -69,11 +78,16 @@ const update = (preObj, params, s) => {
 }
 
 const draw = (obj, params, s) => {
+	const { fontSizeRate } = params.mover;
 	s.push();
+	let i = 0;
 	for (const mover of obj.movers) {
-		s.circle(mover.pos.x, mover.pos.y, 10);
+		const { pos, mass } = mover;
+		s.textSize(params.size * fontSizeRate * mass);
+		s.text(i, pos.x, pos.y);
+		i++;
 	}
 	s.pop();
 }
 
-export const mover = { init, update, draw }
+export const mover = { init, update, draw };
