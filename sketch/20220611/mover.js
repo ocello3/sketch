@@ -1,22 +1,29 @@
 const init = (params, s, tab) => {
 	params.mover = {
-		num: 10,
-		velXmax: 20,
-		velYmax: 20,
+		num: 5,
+		gravity: 9.8,
+		massMin: 10,
+		massMax: 20,
+		velXmax: 5,
+		velYmax: 5,
+		bufferRate: 0.95,
 	}
 	const _param = params.mover;
 	const _tab = tab.pages[1];
 	// _tab.addInput(_param, 'step', { step: 1, min: 1, max: 50 }); //
 	const moverObj = {};
-	const { num, velXmax, velYmax } = _param;
+	const { num, gravity, massMin, massMax, velXmax, velYmax } = _param;
 	moverObj.movers = Array.from(Array(num), () => {
 		const mover = {};
-		mover.constVel = (() => {
+		mover.mass = s.map(Math.random(), 0, 1, massMin, massMax);
+		mover.gravityAcc = s.createVector(0, gravity / mover.mass);
+		mover.initVel = (() => {
 			const x = Math.random() * velXmax;
 			const y = Math.random() * velYmax;
 			return s.createVector(x, y);
 		})();
-		mover.vel = mover.constVel;
+		mover.acc = 0;
+		mover.vel = mover.initVel;
 		mover.pos = (() => {
 			const x = Math.random() * params.size;
 			const y = Math.random() * params.size;
@@ -31,22 +38,31 @@ const update = (preObj, params, s) => {
 	const newObj = { ...preObj };
 	newObj.movers = preObj.movers.map((preMover) => {
 		const newMover = { ...preMover };
-		const updatePos = (constVel) => {
-			const newVel = constVel;
-			return p5.Vector.add(preMover.pos, newVel);
-		}
-		newMover.constVel = (() => {
-			// collision check
-			const newPos = updatePos(preMover.constVel);
-			const isXOver = (newPos.x < 0 || newPos.x > params.size);
-			const isYOver = (newPos.y < 0 || newPos.y > params.size);
-			if (!isXOver && !isYOver) return preMover.constVel; // not collided
-			// collided
-			const x = isXOver? preMover.constVel.x * (-1): preMover.constVel.x;
-			const y = isYOver? preMover.constVel.y * (-1): preMover.constVel.y;
+		const { bufferRate } = params.mover;
+		newMover.acc = preMover.gravityAcc;
+		const updatePos = (newVel) => p5.Vector.add(preMover.pos, newVel);
+		const updateVel = (isXOver, isYOver) => {
+			const newVel = p5.Vector.add(preMover.vel, newMover.acc);
+			const x = isXOver? newVel.x * (-1): newVel.x;
+			const y = isYOver? newVel.y * (-1) * bufferRate: newVel.y;
 			return s.createVector(x, y);
+		}
+		newMover.vel = (() => {
+			const newVel = updateVel(false, false);
+			const newPos = updatePos(newVel);
+			const isXOver = (newPos.x < 0 || newPos.x > params.size);
+			const isYOver = (newPos.y > params.size);
+			return updateVel(isXOver, isYOver);
 		})();
-		newMover.pos = updatePos(newMover.constVel);
+		newMover.pos = (() => {
+			const newPos = updatePos(newMover.vel);
+			const check = (prop) => {
+				if (prop === 'x' && newPos[prop] < 0) return 0;
+				if (newPos[prop] > params.size) return params.size;
+				return newPos[prop];
+			}
+			return s.createVector(check('x'), check('y'));
+		})();
 		return newMover;
 	});
 	return newObj;
