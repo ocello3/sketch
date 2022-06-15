@@ -1,15 +1,21 @@
 const init = (params, s, tab) => {
 	params.flooder = {
 		surfaceYPosRate: 0.5,
-		g: 0.8,
-		mMin: 5,
-		mMax: 100,
-		initPosMaxRate: 0.3,
+		g: 0.3,
+		mMin: 15,
+		mMax: 150,
+		initPosMaxRate: 1.0,
 		text: "Create pockets",
+		cd: 2,
 	}
 	const _param = params.flooder;
 	const _tab = tab.pages[1];
-	// _tab.addInput(_param, 'step', { step: 1, min: 1, max: 50 }); //
+	_tab.addInput(_param, 'surfaceYPosRate', { step: 0.1, min: 0.2, max: 0.8 });
+	_tab.addInput(_param, 'g', { step: 0.1, min: 0.2, max: 1.2 });
+	_tab.addInput(_param, 'mMin', { step: 1, min: 5, max: 20 });
+	_tab.addInput(_param, 'mMax', { step: 1, min: 50, max: 150 });
+	_tab.addInput(_param, 'initPosMaxRate', { step: 0.1, min: 0.1, max: 1.0 });
+	_tab.addInput(_param, 'cd', { step: 0.1, min: 0.5, max: 4.0 });
 	const flooderObj = {};
 	const { surfaceYPosRate, text } = _param;
 	flooderObj.num = _param.text.length;
@@ -26,8 +32,8 @@ const init = (params, s, tab) => {
 
 const update = (preObj, params, s) => {
 	const newObj = { ...preObj };
-	const { mMin, mMax, g, initPosMaxRate } = params.flooder;
-	const { isReset } = preObj;
+	const { mMin, mMax, g, initPosMaxRate, cd } = params.flooder;
+	const { isReset, surfaceYPos } = preObj;
 	newObj.mArray = (() => {
 		if (isReset) {
 			return Array.from(Array(preObj.num), () => {
@@ -49,9 +55,20 @@ const update = (preObj, params, s) => {
 		const newFlooder = { ...preFlooder };
 		const updatePos = () => p5.Vector.add(preFlooder.pos, newFlooder.v);
 		newFlooder.m = newObj.mArray[index];
+		newFlooder.a = (() => {
+			if (preFlooder.isInWater) {
+				const vScalar = p5.Vector.mag(preFlooder.v);
+				const vUnit = p5.Vector.normalize(preFlooder.v);
+				const f = Math.pow(vScalar, 2) * cd * vUnit.y * (-1);
+				const a = f / newFlooder.m;
+				return s.createVector(0, a);
+			}
+			return 0;
+		})();
 		newFlooder.v = (() => {
 			if (isReset) return s.createVector(0, 0);
-			return p5.Vector.add(preFlooder.v, s.createVector(0, g));
+			const a = p5.Vector.add(s.createVector(0, g), newFlooder.a);
+			return p5.Vector.add(preFlooder.v, a);
 		})();
 		newFlooder.pos = (() => {
 			if (isReset) {
@@ -62,7 +79,8 @@ const update = (preObj, params, s) => {
 			}
 			return updatePos();
 		})();
-		newFlooder.isOver = (newFlooder.pos.y > params.size);
+		newFlooder.isInWater = (newFlooder.pos.y > surfaceYPos);
+		newFlooder.isOver = (newFlooder.pos.y > params.size || newFlooder.pos.y < (-1) * initPosMaxRate * params.size);
 		return newFlooder;
 	});
 	newObj.isReset = (() => {
@@ -78,13 +96,16 @@ const draw = (obj, params, s) => {
 	const { surfaceYPos } = obj;
 	// draw water
 	s.push();
+	s.noStroke();
 	s.fill(0, 30);
 	s.rect(0, surfaceYPos, params.size, params.size - surfaceYPos);
 	s.pop();
 	// draw flooders
 	s.push();
 	for (const flooder of obj.flooders) {
-		const { m, font, pos } = flooder;
+		const { m, font, pos, isInWater } = flooder;
+		const a = isInWater? 100: 200;
+		s.fill(0, a);
 		s.textSize(m);
 		s.text(font, pos.x, pos.y);
 	}
