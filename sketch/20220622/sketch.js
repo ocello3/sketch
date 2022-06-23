@@ -7,12 +7,13 @@ import { attractor } from './attractor.js';
 const sketch = s => {
 	let params; // size
 	let attractorObj;
+	let tab;
 	// let synth;
 	s.setup = () => {
 		params = setParams();
 		s.createCanvas(params.size, params.size);
 		// s.blendMode(s.OVERLAY);
-		const tab = gui(s, params, false, false); // audio, seq
+		tab = gui(s, params, false, false); // audio, seq
 		// tab.pages[0].addInput(params, 'margin');
 		attractorObj = attractor.init(params, s, tab);
 		// synth = setSynth(params, tab);
