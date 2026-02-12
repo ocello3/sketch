@@ -1,4 +1,9 @@
 {
+	"20251115":{"title": "peakDetect analyzer", "note": "tool"},
+	"20250817":{"title": "typed by peakDetect", "note": "need to revise for peakDetect"},
+	"20250708":{"title": "swirling petals", "note": "improve snd system"},
+	"20250609":{"title": "dwaw polygon, disapear", "note": "record moving log"},
+	"20250222":{"title": "falling dots", "note": "boring"},
 	"20220627":{"title": "nature of code", "note": "3.4 edited"},
 	"20220622":{"title": "nature of code", "note": "2.9 edited"},
 	"20220613":{"title": "nature of code", "note": "2.4 edited"},
@@ -15,5 +20,6 @@
 	"20220402":{"title":"tile", "note":"4 tiles animaions"},
 	"20220306":{"title":"indipendent circle points", "note":"using samples from snd.dev"},
 	"20211204":{"title":"titleLogo", "note":"get vertex from font data"},
-	"20211107":{"title":"mouse tracking circles", "note":"updated noisely moving rect"}
+	"20211107":{"title":"mouse tracking circles", "note":"updated noisely moving rect"},
+	"20211015":{"title":"waving tiles", "note":"noisely moving rect"}
 }
