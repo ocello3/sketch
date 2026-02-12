@@ -1,4 +1,4 @@
-import { setParams, updateParams, gui } from '../../util/params.js';
+import { setParams, updateParams, gui } from './params.js';
 import { addParams, addGui } from './addParams.js';
 import { setSynth } from './synth.js';
 

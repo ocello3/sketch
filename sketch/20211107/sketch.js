@@ -1,4 +1,4 @@
-import { setParams, updateParams, gui } from '../../util/params.js';
+import { setParams, updateParams, gui } from './params.js';
 import { addParams, addGui } from './editParams.js';
 import { setDot, updateDot } from './dot.js';
 import { setPoly, updatePoly, testSetPoly, testUpdatedPoly } from './poly.js';
