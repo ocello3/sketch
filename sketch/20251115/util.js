@@ -160,9 +160,10 @@ export function debug(s, p, arg, displayArrayLength = null, startPosition = 0, r
 
 export function getSize(s) {
 	const div = document.getElementById("canvas");
-	const width = div?.clientWidth ?? window.innerWidth;
-	const height = div?.clientHeight ?? window.innerHeight;
-	const size = Math.min(width, height);
+	const size = div.clientWidth;
+	// const width = div?.clientWidth ?? window.innerWidth;
+	// const height = div?.clientHeight ?? window.innerHeight;
+	// const size = Math.min(width, height);
 	s.resizeCanvas(size, size);
 	return size;
 }
