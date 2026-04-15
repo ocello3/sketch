@@ -1,5 +1,5 @@
 // util.js
-import { Pane } from "../../lib/tweakpane-4.0.3.min.js";
+import { Pane } from "../lib/tweakpane-4.0.3.min.js";
 
 /**
  * initRoutine(s)
@@ -21,7 +21,23 @@ export function initRoutine(s) {
  * - activate is called on the first play event
  */
 // create pane by tweakpane and return folder as 'f'
+
+const ban_scroll = () => {
+	document.addEventListener("wheel", notscroll, { passive: false }); // pc
+	document.addEventListener("touchmove", notscroll, { passive: false }); // touch
+	document.addEventListener("dblclick", notscroll, { passive: false }); // expand
+}
+const go_scroll = () => {
+	document.removeEventListener("wheel", notscroll, { passive: false }); // pc
+	document.removeEventListener("touchmove", notscroll, { passive: false }); // touch
+	document.removeEventListener("dblclick", notscroll, { passive: false }); // expand
+}
+const notscroll = (e) => {
+	e.preventDefault();
+}
+
 export const createPane = (s, p, activate = undefined) => {
+	ban_scroll();
 	const pane = new Pane({
 		container: document.getElementById("pane"),
 	});
@@ -37,10 +53,13 @@ export const createPane = (s, p, activate = undefined) => {
 			pane.refresh();
 			if (p.isInit) {
 				if (activate != undefined) activate();
+				ban_scroll();
 				p.isInit = false;
 			}
+			ban_scroll();
 			return;
 		} else {
+			go_scroll();
 			p.vol = 0;
 			s.outputVolume(p.vol, 0.1);
 			s.noLoop();
@@ -160,9 +179,10 @@ export function debug(s, p, arg, displayArrayLength = null, startPosition = 0, r
 
 export function getSize(s) {
 	const div = document.getElementById("canvas");
-	const width = div?.clientWidth ?? window.innerWidth;
-	const height = div?.clientHeight ?? window.innerHeight;
-	const size = Math.min(width, height);
+	const size = div.clientWidth;
+	// const width = div?.clientWidth ?? window.innerWidth;
+	// const height = div?.clientHeight ?? window.innerHeight;
+	// const size = Math.min(width, height);
 	s.resizeCanvas(size, size);
 	return size;
 }

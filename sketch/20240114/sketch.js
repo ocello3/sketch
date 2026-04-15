@@ -1,9 +1,10 @@
 import '../../lib/p5.min.js';
 import '../../lib/p5.sound.min.js';
-import * as u from './util.js';
+import * as u from "../../component/util.js";
 import * as e from './effect.js';
 
 const sketch = s => {
+	
 	let size, dt = {};
 	let snd = {};
 	let p = {
@@ -16,7 +17,10 @@ const sketch = s => {
 		count: 10,
 		connectLimit: 0.13,
 	};
-	const f = u.createPane(s, p);
+	const f = u.createPane(s, p, () => {
+			// (activate) snd.osc.start());
+			// snd.rain.play();
+		});
 	const f1 = f.addFolder({
 		title: 'sketch',
 	});
@@ -26,6 +30,7 @@ const sketch = s => {
 	});
 
 	s.setup =() => {
+		u.initRoutine(s);
 		size = u.getSize(s);
 		s.createCanvas(size, size).parent('canvas');
 		snd.fms = [...Array(p.count)].map((_, i) => {
@@ -128,7 +133,7 @@ const sketch = s => {
 		e.drawSpirals(s, dt, snd, size);
 		u.drawFrame(s, size);
 		// debug
-		u.debug(s);
+		u.debug(s, p, p);
 		// reset params 
 		if (p.isInit) p.isInit = false;
 		p.frameRate = s.isLooping() ? s.frameRate() : 0;

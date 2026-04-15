@@ -1,6 +1,6 @@
 import "../../lib/p5.min.js";
 import "../../lib/p5.sound.min.js";
-import * as u from "./util.js";
+import * as u from "../../component/util.js";
 
 /*
 todo:

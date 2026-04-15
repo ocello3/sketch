@@ -1,6 +1,6 @@
 import "../../lib/p5.min.js";
 import "../../lib/p5.sound.min.js";
-import * as u from "./util.js";
+import * as u from "../../component/util.js";
 import * as e from "./effect.js";
 import { getParams } from "./params.js";
 
@@ -367,7 +367,7 @@ const sketch = (s) => {
 		});
 		u.drawFrame(s, size);
 		// debug
-		u.debug(s);
+		u.debug(s, p, p);
 		// reset status
 		p.isEnded = [false, false, false, false];
 		if (p.isInit) p.isInit = false;
