@@ -13,7 +13,7 @@ export const getParams = () => {
 		laps: 5,
 		radiusRate: 0.1,
 		// sound
-		cutoff: 10000,
-		resononce: 1,
+		// cutoff: 10000,
+		// resononce: 1,
 	};
 };

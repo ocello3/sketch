@@ -22,20 +22,12 @@ const sketch = (s) => {
 		});
 		const f1 = f.addFolder({ title: "sketch" });
 		const f2 = f.addFolder({ title: "sound" });
-		// gain
-		f2.addBinding(p, 'resononce', {
-			min: 1,
-			max: 20,
-		}).on('change', (ev) => {
-			snd.filter.res(ev.value);
-		});
-		f2.addBinding(p, 'cutoff', {
-			min: 0,
-			max: 1,
-		}).on('change', (ev) => {
-			const freq = Math.pow(10, s.map(ev.value, 0, 1, Math.log10(80), Math.log10(8000)));
-			snd.filter.freq(freq);
-		});
+		// f2.addBinding(p, 'resononce', {
+		// 	min: 1,
+		// 	max: 20,
+		// }).on('change', (ev) => {
+		// 	snd.filter.res(ev.value);
+		// });
 	};
 	s.draw = () => {
 		function updateSnd() {}
@@ -46,7 +38,7 @@ const sketch = (s) => {
 			dt.spectrum = snd.fft.analyze();
 			// Fermat spiral : r = a * sqrt (theta)
 			dt.barSizes = dt.spectrum.map(vol => s.map(vol, 0, 255, 0, size * p.barSizeRate));
-			dt.angles = (p.isInit || dt.poses[0].x > size * 1.2) ?
+			dt.angles = (p.isInit || dt.poses[0].x > size *1.2) ?
 				dt.barSizes.map((_, i) => s.map(i, 0, dt.barSizes.length, 0, 2 * Math.PI * p.laps)):
 				dt.angles.map(angle => angle + 0.02);
 			dt.poses = dt.angles.map((angle) => {
@@ -55,6 +47,14 @@ const sketch = (s) => {
 				const y = Math.sin(angle) * r * 0.5 + size * 0.5;
 				return s.createVector(x, y, r);
 			});
+			dt.filter = (() => {
+				let filter = {};
+				const maxFreq = size * 1.2;
+				filter.freq = Math.pow(10, s.map(dt.poses[0].x, 0, maxFreq, Math.log10(80), Math.log10(8000)));
+				const maxRes = size * 0.5 * Math.sqrt(2) * 1.2;
+				filter.resononce = s.map(dt.poses[0].z, 0, maxRes, 1, 20);
+				return filter;
+			})();
 			return dt;
 		}
 		dt = getDt(dt);
@@ -66,6 +66,8 @@ const sketch = (s) => {
 		function playSnd() {
 			// snd.onset.update(snd.fft);
 			if (p.isInit) snd.file.loop();
+			snd.filter.res(dt.filter.resononce);
+			snd.filter.freq(dt.filter.freq);
 		}
 		playSnd();
 

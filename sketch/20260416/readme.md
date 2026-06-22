@@ -11,10 +11,8 @@ wavの解析を描画にフィードバック
 gainは3点の合計が-60〜0。一定時間は固定
 
 # todo
-最大半径をparamsから調整できるようにする
-resonanceは半径の大きさ
-cutoffは[0]のx座標
-y座標は？
+filterのresとfreqが分かりにくい
+絵に要素を加える
 
 # done
 wavを再生するコードを書く
@@ -25,3 +23,6 @@ eqをかけてみて、tweakpaneで操作する - freq - 対数変換
 fftのコードを書く
 eqをFilterに書き直す
 螺旋を回転させる
+resonanceは半径の大きさ
+cutoffは[0]のx座標
+resとfreqが想定を超えている気がするので修正する
