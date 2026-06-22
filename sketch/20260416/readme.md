@@ -11,8 +11,10 @@ wavの解析を描画にフィードバック
 gainは3点の合計が-60〜0。一定時間は固定
 
 # todo
-fftのコードを書く
-
+最大半径をparamsから調整できるようにする
+resonanceは半径の大きさ
+cutoffは[0]のx座標
+y座標は？
 
 # done
 wavを再生するコードを書く
@@ -20,3 +22,6 @@ wavを再生するコードを書く
 wavが再生できるか確認する
 eqをかけてみて、tweakpaneで操作する - gain
 eqをかけてみて、tweakpaneで操作する - freq - 対数変換
+fftのコードを書く
+eqをFilterに書き直す
+螺旋を回転させる

@@ -9,15 +9,11 @@ export const getParams = () => {
 		debugMode: true, // single point to toggle safety checks
 
 		// sketch
-		barSizeRate: 0.1,
+		barSizeRate: 0.2,
 		laps: 5,
 		radiusRate: 0.1,
 		// sound
-		eq_1_low_gain: 0,
-		eq_1_mid_gain: 0,
-		eq_1_high_gain: 0,
-		eq_1_low_freq: 0,
-		eq_1_mid_freq: 0,
-		eq_1_high_freq: 0,
+		cutoff: 10000,
+		resononce: 1,
 	};
 };
