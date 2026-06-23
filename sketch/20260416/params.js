@@ -9,11 +9,12 @@ export const getParams = () => {
 		debugMode: true, // single point to toggle safety checks
 
 		// sketch
-		barSizeRate: 0.2,
+		barSizeRate: 0.4,
 		laps: 5,
 		radiusRate: 0.1,
+		rotateVel: 0.02,
 		// sound
-		// cutoff: 10000,
-		// resononce: 1,
+		res: 20,
+		freq: 8000,
 	};
 };

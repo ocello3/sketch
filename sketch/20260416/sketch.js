@@ -22,12 +22,18 @@ const sketch = (s) => {
 		});
 		const f1 = f.addFolder({ title: "sketch" });
 		const f2 = f.addFolder({ title: "sound" });
-		// f2.addBinding(p, 'resononce', {
-		// 	min: 1,
-		// 	max: 20,
-		// }).on('change', (ev) => {
-		// 	snd.filter.res(ev.value);
-		// });
+		f1.addBinding(p, 'rotateVel', {
+			min: 0.005,
+			max: 1,
+		});
+		f2.addBinding(p, 'res', {
+			min: 10,
+			max: 50,
+		});
+		f2.addBinding(p, 'freq', {
+			min: 2000,
+			max: 10000,
+		});
 	};
 	s.draw = () => {
 		function updateSnd() {}
@@ -40,19 +46,19 @@ const sketch = (s) => {
 			dt.barSizes = dt.spectrum.map(vol => s.map(vol, 0, 255, 0, size * p.barSizeRate));
 			dt.angles = (p.isInit || dt.poses[0].x > size *1.2) ?
 				dt.barSizes.map((_, i) => s.map(i, 0, dt.barSizes.length, 0, 2 * Math.PI * p.laps)):
-				dt.angles.map(angle => angle + 0.02);
+				dt.angles.map(angle => angle + p.rotateVel);
 			dt.poses = dt.angles.map((angle) => {
 				const r = p.radiusRate * size * Math.sqrt(angle);
 				const x = Math.cos(angle) * r + size * 0.5;
-				const y = Math.sin(angle) * r * 0.5 + size * 0.5;
+				const y = Math.sin(angle) * r * 0.3 + size * 0.3;
 				return s.createVector(x, y, r);
 			});
 			dt.filter = (() => {
 				let filter = {};
 				const maxFreq = size * 1.2;
-				filter.freq = Math.pow(10, s.map(dt.poses[0].x, 0, maxFreq, Math.log10(80), Math.log10(8000)));
+				filter.freq = Math.pow(10, s.map(dt.poses[0].x, 0, maxFreq, Math.log10(80), Math.log10(p.freq)));
 				const maxRes = size * 0.5 * Math.sqrt(2) * 1.2;
-				filter.resononce = s.map(dt.poses[0].z, 0, maxRes, 1, 20);
+				filter.resononce = s.map(dt.poses[0].z, 0, maxRes, 1, p.res);
 				return filter;
 			})();
 			return dt;
