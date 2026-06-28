@@ -72,6 +72,7 @@ const sketch = (s) => {
 		function playSnd() {
 			// snd.onset.update(snd.fft);
 			if (p.isInit) snd.file.loop();
+			snd.file.rate(p.rotateVel * 10);
 			snd.filter.res(dt.filter.resononce);
 			snd.filter.freq(dt.filter.freq);
 		}

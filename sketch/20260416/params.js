@@ -12,7 +12,7 @@ export const getParams = () => {
 		barSizeRate: 0.4,
 		laps: 5,
 		radiusRate: 0.1,
-		rotateVel: 0.02,
+		rotateVel: 0.07,
 		// sound
 		res: 20,
 		freq: 8000,
