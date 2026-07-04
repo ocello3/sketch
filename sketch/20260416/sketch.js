@@ -23,8 +23,8 @@ const sketch = (s) => {
 		const f1 = f.addFolder({ title: "sketch" });
 		const f2 = f.addFolder({ title: "sound" });
 		f1.addBinding(p, 'rotateVel', {
-			min: 0.005,
-			max: 1,
+			min: 0.01,
+			max: 0.1,
 		});
 		f2.addBinding(p, 'res', {
 			min: 10,
@@ -44,6 +44,7 @@ const sketch = (s) => {
 			dt.spectrum = snd.fft.analyze();
 			// Fermat spiral : r = a * sqrt (theta)
 			dt.barSizes = dt.spectrum.map(vol => s.map(vol, 0, 255, 0, size * p.barSizeRate));
+			dt.barAlphas = dt.barSizes.map(vol => s.map(vol, 0, size * p.barSizeRate, 0, 200));
 			dt.angles = (p.isInit || dt.poses[0].x > size *1.2) ?
 				dt.barSizes.map((_, i) => s.map(i, 0, dt.barSizes.length, 0, 2 * Math.PI * p.laps)):
 				dt.angles.map(angle => angle + p.rotateVel);
@@ -66,7 +67,7 @@ const sketch = (s) => {
 		dt = getDt(dt);
 		s.background(255);
 		u.drawFrame(s, size);
-		u.debug(s, p, dt, 5);
+		// u.debug(s, p, dt, 5);
 		p.frameRate = s.isLooping() ? s.frameRate() : 0;
 
 		function playSnd() {
@@ -80,10 +81,10 @@ const sketch = (s) => {
 
 		function drawDt() {
 			dt.poses.forEach((pos, i) => {
-				s.fill(0, 80);
+				s.fill(0, dt.barAlphas[i]);
 				s.noStroke();
 				const height = dt.barSizes[i] > 1 ? dt.barSizes[i] : 0;
-				s.rect(pos.x, pos.y, size * 0.008, height);
+				s.rect(pos.x, pos.y, size * 0.005, height);
 			});
 		}
 		drawDt();

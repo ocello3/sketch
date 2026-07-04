@@ -11,7 +11,7 @@ export const getParams = () => {
 		// sketch
 		barSizeRate: 0.4,
 		laps: 5,
-		radiusRate: 0.1,
+		radiusRate: 0.05,
 		rotateVel: 0.07,
 		// sound
 		res: 20,
